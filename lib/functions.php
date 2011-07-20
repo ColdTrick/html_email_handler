@@ -128,6 +128,9 @@
 		if(!empty($html_text) && defined("XML_DOCUMENT_NODE")){
 			$css = "";
 			
+			// set custom error handling
+			libxml_use_internal_errors(true);
+			
 			$dom = new DOMDocument();
 			$dom->loadHTML($html_text);
 			
@@ -140,6 +143,9 @@
 					$css .= $styles->item($i)->nodeValue;
 				}
 			}
+			
+			// clear error log
+			libxml_clear_errors();
 			
 			$emo = new Emogrifier($html_text, $css);
 			$result = $emo->emogrify();

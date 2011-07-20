@@ -35,6 +35,9 @@ Please check if you have one (or more) of the following
 ==================
 Version history
 ==================
+x.x:
+	- changed: suppresed DOMDocument warnings
+
 1.1 (2011-04-14):
 	- added: a link to notification settings in footer of message
 	- changed: layout of default message
