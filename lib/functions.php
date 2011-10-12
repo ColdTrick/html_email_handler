@@ -147,11 +147,11 @@
 			// clear error log
 			libxml_clear_errors();
 			
+			elgg_load_library("emogrifier");
+			
 			$emo = new Emogrifier($html_text, $css);
 			$result = $emo->emogrify();
 		}
 		
 		return $result;
 	}
-
-?>

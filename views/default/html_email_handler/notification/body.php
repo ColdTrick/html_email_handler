@@ -49,7 +49,7 @@
 				padding: 10px;
 			}
 			
-			#content_area_user_title h2 {
+			#notification_wrapper h2 {
 				margin: 5px 0 5px 10px;
 				color: #0054A7;
 				font-size: 1.35em;
@@ -107,12 +107,12 @@
 				</a>
 				
 				<?php 
-					if(isloggedin()){
-						$settings_url = $vars["url"] . "pg/settings";
-						if(is_plugin_enabled("notifications")){
-							$settings_url = $vars["url"] . "pg/notifications/personal";
+					if(elgg_is_logged_in()){
+						$settings_url = $vars["url"] . "settings";
+						if(elgg_is_active_plugin("notifications")){
+							$settings_url = $vars["url"] . "notifications/personal";
 						}
-						echo sprintf(elgg_echo("html_email_handler:notification:footer:settings"), "<a href='" . $settings_url . "'>", "</a>");
+						echo elgg_echo("html_email_handler:notification:footer:settings", array("<a href='" . $settings_url . "'>", "</a>"));
 					}
 				?>
 				<div class="clearfloat"></div>

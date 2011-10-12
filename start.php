@@ -1,24 +1,34 @@
 <?php 
 
 	require_once(dirname(__FILE__) . "/lib/functions.php");
-	// include CSS coverter if needed
-	if(!class_exists("Emogrifier")){
-		require_once(dirname(__FILE__) . "/vendors/emogrifier/emogrifier.php");
-	}
-
+	
 	function html_email_handler_init(){
 		// do we need to overrule default email notifications
-		if(get_plugin_setting("notifications", "html_email_handler") == "yes"){
+		if(elgg_get_plugin_setting("notifications", "html_email_handler") == "yes"){
 			register_notification_handler("email", "html_email_handler_notification_handler");
 		}
 		
-		register_page_handler('html_email_handler','html_email_handler_page_handler');
+		// register page_handler for nice URL's
+		elgg_register_page_handler("html_email_handler", "html_email_handler_page_handler");
+		
+		// register html converter library
+		elgg_register_library("emogrifier", dirname(__FILE__) . "/vendors/emogrifier/emogrifier.php");
+	}
+	
+	function html_email_handler_pagesetup(){
+		if(elgg_in_context("theme_preview")){
+			elgg_register_menu_item('page', array(
+						'name' => "html_email_handler",
+						'text' => elgg_echo("html_email_handler:theme_preview:menu"),
+						'href' => "html_email_handler/test"
+			));
+		}
 	}
 	
 	function html_email_handler_page_handler($page){
 		
 		switch ($page[0]) {
-			case 'test':
+			case "test":
 				include(dirname(__FILE__) . "/pages/test.php");
 				break;
 		}
@@ -27,20 +37,19 @@
 	function html_email_handler_notification_handler(ElggEntity $from, ElggUser $to, $subject, $message, array $params = NULL){
 		global $CONFIG;
 	
-		if (empty($from)) {
-			throw new NotificationException(sprintf(elgg_echo('NotificationException:MissingParameter'), 'from'));
+		if (!$from) {
+			$msg = elgg_echo("NotificationException:MissingParameter", array("from"));
+			throw new NotificationException($msg);
 		}
 	
-		if (empty($to)) {
-			throw new NotificationException(sprintf(elgg_echo('NotificationException:MissingParameter'), 'to'));
-		}
-		
-		if(empty($message)){
-			throw new NotificationException(sprintf(elgg_echo('NotificationException:MissingParameter'), 'message'));
+		if (!$to) {
+			$msg = elgg_echo("NotificationException:MissingParameter", array("to"));
+			throw new NotificationException($msg);
 		}
 	
-		if (empty($to->email)) {
-			throw new NotificationException(sprintf(elgg_echo('NotificationException:NoEmailAddress'), $to->guid));
+		if ($to->email == "") {
+			$msg = elgg_echo("NotificationException:NoEmailAddress", array($to->guid));
+			throw new NotificationException($msg);
 		}
 		
 		// To
@@ -95,6 +104,5 @@
 	}
 
 	// register default Elgg events
-	register_elgg_event_handler("init", "system", "html_email_handler_init");
-
-?>
+	elgg_register_event_handler("init", "system", "html_email_handler_init");
+	elgg_register_event_handler("pagesetup", "system", "html_email_handler_pagesetup");
