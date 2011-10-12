@@ -34,7 +34,7 @@ Please check if you have one (or more) of the following
 
 == 3. Version history ==
 
-x.x:
+2.0 (2011-10-12):
 
 - changed: Elgg 1.8 modifications
 - changed: suppresed DOMDocument warnings
