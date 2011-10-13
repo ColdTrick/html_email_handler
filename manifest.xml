@@ -37,6 +37,4 @@
 	</conflicts >
  	
  	<category>ColdTrick</category>
-	
-	<admin_interface>advanced</admin_interface>
 </plugin_manifest>
