@@ -33,6 +33,9 @@ Please check if you have one (or more) of the following
 
 
 == 3. Version history ==
+x.x:
+
+- added: extra command option in mail, to better prevent mails being marked as spam (mainly on shared hosts)
 
 2.0 (2011-10-12):
 

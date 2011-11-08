@@ -23,17 +23,19 @@
 		
 		// make site email
 		if(!empty($CONFIG->site->email)){
+			$sendmail_from = $CONFIG->site->email;
+			$site_from = $sendmail_from;
+			
 			if(!empty($CONFIG->site->name)){
-				$site_from = $CONFIG->site->name . " <" . $CONFIG->site->email . ">";
-			} else {
-				$site_from = $CONFIG->site->email;
+				$site_from = $CONFIG->site->name . " <" . $sendmail_from . ">";
 			}
 		} else {
 			// no site email, so make one up
+			$sendmail_from = "noreply@" . get_site_domain($CONFIG->site_guid);
+			$site_from = $sendmail_from;
+			
 			if(!empty($CONFIG->site->name)){
-				$site_from = $CONFIG->site->name . " <noreply@" . get_site_domain($CONFIG->site_guid) . ">";
-			} else {
-				$site_from = "noreply@" . get_site_domain($CONFIG->site_guid);
+				$site_from = $CONFIG->site->name . " <" . $sendmail_from . ">";
 			}
 		}
 		
@@ -110,7 +112,7 @@
 			
 			// convert to to correct format
 			$to = implode(", ", $options["to"]);
-			$result = mail($to, $options["subject"], $message, $headers);
+			$result = mail($to, $options["subject"], $message, $headers, "-f" . $sendmail_from);
 		}			
 		
 		return $result;
