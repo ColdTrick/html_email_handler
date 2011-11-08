@@ -1,0 +1,20 @@
+= Version history =
+x.x:
+
+- added: extra command option in mail, to better prevent mails being marked as spam (mainly on shared hosts)
+- changed: moved version history to CHANGES.txt
+
+2.0 (2011-10-12):
+
+- changed: Elgg 1.8 modifications
+- changed: suppresed DOMDocument warnings
+
+1.1 (2011-04-14):
+
+- added: a link to notification settings in footer of message
+- changed: layout of default message
+- fixed: links not clickable in email clients
+
+1.0 (2011-04-04):
+
+- initial version 

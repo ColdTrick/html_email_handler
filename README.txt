@@ -6,7 +6,6 @@ Send out full HTML mails to your users
 
 1. Features
 2. Conflicts
-3. Version history
 
 == 1. Features ==
 
@@ -30,24 +29,3 @@ Please check if you have one (or more) of the following
 - phpmailer (<a href="http://community.elgg.org/pg/plugins/project/384769/developer/costelloc/phpmailer" target="_blank">http://community.elgg.org/pg/plugins/project/384769/developer/costelloc/phpmailer</a>)
 - html_mail (<a href="http://community.elgg.org/pg/plugins/project/566028/developer/tulicipriota/html-mails" target="_blank">http://community.elgg.org/pg/plugins/project/566028/developer/tulicipriota/html-mails</a>)
 - mail_queue (<a href="http://community.elgg.org/pg/plugins/project/616834/developer/mcampo/mail-queue" target="_blank">http://community.elgg.org/pg/plugins/project/616834/developer/mcampo/mail-queue</a>)
-
-
-== 3. Version history ==
-x.x:
-
-- added: extra command option in mail, to better prevent mails being marked as spam (mainly on shared hosts)
-
-2.0 (2011-10-12):
-
-- changed: Elgg 1.8 modifications
-- changed: suppresed DOMDocument warnings
-
-1.1 (2011-04-14):
-
-- added: a link to notification settings in footer of message
-- changed: layout of default message
-- fixed: links not clickable in email clients
-
-1.0 (2011-04-04):
-
-- initial version 
