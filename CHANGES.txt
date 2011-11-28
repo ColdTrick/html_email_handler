@@ -1,5 +1,5 @@
 = Version history =
-x.x:
+2.1 (2011-11-28):
 
 - added: extra command option in mail, to better prevent mails being marked as spam (mainly on shared hosts)
 - fixed: page_handler issue with Elgg 1.8.1
