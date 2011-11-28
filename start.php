@@ -26,12 +26,16 @@
 	}
 	
 	function html_email_handler_page_handler($page){
+		$result = false;
 		
 		switch ($page[0]) {
 			case "test":
+				$result = true;
 				include(dirname(__FILE__) . "/pages/test.php");
 				break;
 		}
+		
+		return $result;
 	}
 	
 	function html_email_handler_notification_handler(ElggEntity $from, ElggUser $to, $subject, $message, array $params = NULL){

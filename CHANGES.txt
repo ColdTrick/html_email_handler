@@ -2,6 +2,7 @@
 x.x:
 
 - added: extra command option in mail, to better prevent mails being marked as spam (mainly on shared hosts)
+- fixed: page_handler issue with Elgg 1.8.1
 - changed: moved version history to CHANGES.txt
 
 2.0 (2011-10-12):
