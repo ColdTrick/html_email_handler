@@ -1,11 +1,16 @@
 <?php 
 
 	require_once(dirname(__FILE__) . "/lib/functions.php");
+	require_once(dirname(__FILE__) . "/lib/hooks.php");
 	
 	function html_email_handler_init(){
 		// do we need to overrule default email notifications
 		if(elgg_get_plugin_setting("notifications", "html_email_handler") == "yes"){
+			// notification handler for nice From part
 			register_notification_handler("email", "html_email_handler_notification_handler");
+			
+			// register hook to handle the rest of the email being send
+			elgg_register_plugin_hook_handler("email", "system", "html_email_handler_email_hook");
 		}
 		
 		// register page_handler for nice URL's
@@ -88,12 +93,7 @@
 		}
 		
 		// generate HTML mail body
-		$html_message = elgg_view("html_email_handler/notification/body", array("title" => $subject, "message" => parse_urls($message)));
-		if(defined("XML_DOCUMENT_NODE")){
-			if($transform = html_email_handler_css_inliner($html_message)){
-				$html_message = $transform;
-			}
-		}
+		$html_message = html_email_handler_make_html_body($subject, $message);
 	
 		// set options for sending
 		$options = array(

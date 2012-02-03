@@ -1,4 +1,8 @@
 = Version history =
+x.x:
+
+- added: now also handling emails send by elgg_send_email
+
 2.1 (2011-11-28):
 
 - added: extra command option in mail, to better prevent mails being marked as spam (mainly on shared hosts)
