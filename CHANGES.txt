@@ -2,6 +2,7 @@
 x.x:
 
 - added: now also handling emails send by elgg_send_email
+- added: option to configure sendmail options
 
 2.1 (2011-11-28):
 

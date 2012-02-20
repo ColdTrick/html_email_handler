@@ -39,6 +39,8 @@
 			}
 		}
 		
+		$sendmail_options = html_email_handler_get_sendmail_options();
+		
 		// set default options
 		$default_options = array(
 			"to" => array(),
@@ -112,7 +114,7 @@
 			
 			// convert to to correct format
 			$to = implode(", ", $options["to"]);
-			$result = mail($to, $options["subject"], $message, $headers, "-f" . $sendmail_from);
+			$result = mail($to, $options["subject"], $message, $headers, $sendmail_options);
 		}			
 		
 		return $result;
@@ -161,9 +163,24 @@
 	function html_email_handler_make_html_body($subject = "", $body = ""){
 		// generate HTML mail body
 		$result = elgg_view("html_email_handler/notification/body", array("title" => $subject, "message" => parse_urls($body)));
+		
 		if(defined("XML_DOCUMENT_NODE")){
 			if($transform = html_email_handler_css_inliner($result)){
 				$result = $transform;
+			}
+		}
+		
+		return $result;
+	}
+	
+	function html_email_handler_get_sendmail_options(){
+		static $result;
+		
+		if(!isset($result)){
+			$result = "";
+			
+			if($setting = elgg_get_plugin_setting("sendmail_options", "html_email_handler") != ""){
+				$result = $setting;
 			}
 		}
 		
