@@ -21,13 +21,12 @@
 	}
 	
 	function html_email_handler_pagesetup(){
-		if(elgg_in_context("theme_preview")){
-			elgg_register_menu_item('page', array(
-						'name' => "html_email_handler",
-						'text' => elgg_echo("html_email_handler:theme_preview:menu"),
-						'href' => "html_email_handler/test"
-			));
-		}
+		elgg_register_menu_item('page', array(
+			"name" => "html_email_handler",
+			"text" => elgg_echo("html_email_handler:theme_preview:menu"),
+			"href" => "html_email_handler/test",
+			"context" => "theme_preview"
+		));
 	}
 	
 	function html_email_handler_page_handler($page){

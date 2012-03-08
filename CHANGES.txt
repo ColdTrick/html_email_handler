@@ -1,4 +1,8 @@
 = Version history =
+x.x:
+
+- changed: registration of menu items
+
 2.2 (2012-03-02):
 
 - added: now also handling emails send by elgg_send_email
