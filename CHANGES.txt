@@ -1,6 +1,7 @@
 = Version history =
 x.x:
 
+- fixed: error in getting extra sendmail options
 - changed: registration of menu items
 
 2.2 (2012-03-02):

@@ -179,7 +179,7 @@
 		if(!isset($result)){
 			$result = "";
 			
-			if($setting = elgg_get_plugin_setting("sendmail_options", "html_email_handler") != ""){
+			if(($setting = elgg_get_plugin_setting("sendmail_options", "html_email_handler")) && !empty($setting)){
 				$result = $setting;
 			}
 		}
