@@ -72,6 +72,7 @@
 			$boundary = uniqid($CONFIG->site->name);
 			
 			// start building headers
+			$headers = "";
 			if(!empty($options["from"])){
 				$headers .= "From: " . $options["from"] . PHP_EOL;
 			} else {
@@ -90,6 +91,9 @@
 			if(!empty($options["bcc"])){
 				$headers .= "Bcc: " . implode(", ", $options["bcc"]) . PHP_EOL;
 			}
+			
+			// start building the message
+			$message = "";
 			
 			// TEXT part of message
 			if(!empty($options["plaintext_message"])){
