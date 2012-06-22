@@ -86,7 +86,7 @@
 		$options = array(
 			"to" => $to,
 			"from" => $from,
-			"subject" => $subject,
+			"subject" => $name = '=?UTF-8?B?' . base64_encode($subject) . '?=',
 			"html_message" => $html_message,
 			"plaintext_message" => $message
 		);
