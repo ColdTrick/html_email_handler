@@ -28,60 +28,48 @@
 			"context" => "theme_preview"
 		));
 	}
-	
+
 	function html_email_handler_page_handler($page){
 		$result = false;
-		
+
 		switch ($page[0]) {
 			case "test":
 				$result = true;
 				include(dirname(__FILE__) . "/pages/test.php");
 				break;
 		}
-		
+
 		return $result;
 	}
-	
+
 	function html_email_handler_notification_handler(ElggEntity $from, ElggUser $to, $subject, $message, array $params = NULL){
 		global $CONFIG;
-	
+
 		if (!$from) {
 			$msg = elgg_echo("NotificationException:MissingParameter", array("from"));
 			throw new NotificationException($msg);
 		}
-	
+
 		if (!$to) {
 			$msg = elgg_echo("NotificationException:MissingParameter", array("to"));
 			throw new NotificationException($msg);
 		}
-	
+
 		if ($to->email == "") {
 			$msg = elgg_echo("NotificationException:NoEmailAddress", array($to->guid));
 			throw new NotificationException($msg);
 		}
-		
+
 		// To
-		if(!empty($to->name)){
-			$to = $to->name . " <" . $to->email . ">";
-		} else {
-			$to = $to->email;
-		}
-	
+		$to = html_email_handler_make_rfc822_address($to);
+
 		// From
 		// If there's an email address, use it - but only if its not from a user.
 		if (!($from instanceof ElggUser) && !empty($from->email)) {
-			if(!empty($from->name)){
-				$from = $from->name . " <" . $from->email . ">";
-			} else {
-				$from = $from->email;
-			}
+		    $from = html_email_handler_make_rfc822_address($from);
 		} elseif ($CONFIG->site && !empty($CONFIG->site->email)) {
-			// Use email address of current site if we cannot use sender's email
-			if(!empty($CONFIG->site->name)){
-				$from = $CONFIG->site->name . " <" . $CONFIG->site->email . ">";
-			} else {
-				$from = $CONFIG->site->email;
-			}
+		    // Use email address of current site if we cannot use sender's email
+		    $from = html_email_handler_make_rfc822_address($CONFIG->site);
 		} else {
 			// If all else fails, use the domain of the site.
 			if(!empty($CONFIG->site->name)){
