@@ -204,7 +204,7 @@
 	function html_email_handler_make_rfc822_address(ElggEntity $entity) {
 		if(!empty($entity->name)){
 		    $name = $entity->name;
-		    if (strchr($entity, ',', $part)) {
+		    if (strstr($name, ',')) {
 		        $name = '"' . $name . '"'; // Protect the name with quotations if it contains a comma
 		    }
 			$addr = $name . " <" . $entity->email . ">";
