@@ -72,10 +72,14 @@
 		    $from = html_email_handler_make_rfc822_address($CONFIG->site);
 		} else {
 			// If all else fails, use the domain of the site.
+			$fallback_email = elgg_get_plugin_setting('fallback_email_options');
+			if(!$fallback_email){
+				$fallback_email = '<noreply&#64;' . get_site_domain($CONFIG->site_guid) . '>';
+			}
 			if(!empty($CONFIG->site->name)){
-				$from = $CONFIG->site->name . " <noreply@" . get_site_domain($CONFIG->site_guid) . ">";
+				$from = $fallback_email;
 			} else {
-				$from = "noreply@" . get_site_domain($CONFIG->site_guid);
+				$from = $fallback_email;
 			}
 		}
 		

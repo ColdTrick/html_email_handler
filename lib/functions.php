@@ -30,8 +30,12 @@
 				$site_from = $CONFIG->site->name . " <" . $sendmail_from . ">";
 			}
 		} else {
-			// no site email, so make one up
-			$sendmail_from = "noreply@" . get_site_domain($CONFIG->site_guid);
+			// no site email, so grab our default
+			$fallback_email = elgg_get_plugin_setting('fallback_email_options');
+			if(!$fallback_email){
+				$fallback_email = "noreply&#64;" . get_site_domain($CONFIG->site_guid);
+			}
+			$sendmail_from = '<'.$fallback_email.'>';
 			$site_from = $sendmail_from;
 			
 			if(!empty($CONFIG->site->name)){
