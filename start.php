@@ -64,22 +64,21 @@
 		$to = html_email_handler_make_rfc822_address($to);
 
 		// From
-		// If there's an email address, use it - but only if its not from a user.
-		if (!($from instanceof ElggUser) && !empty($from->email)) {
-		    $from = html_email_handler_make_rfc822_address($from);
+		if($dedicated_email = elgg_get_plugin_setting('dedicated_email_option')){
+			// Use dedicated from email address, if one is set e.g. notifications@sitename.com
+		    $from = $from->name . " <" . $dedicated_email . ">";
+		}elseif(!($from instanceof ElggUser) && !empty($from->email)) {
+			// If there's an email address, use it - but only if its not from a user.
+			$from = html_email_handler_make_rfc822_address($from);
 		} elseif ($CONFIG->site && !empty($CONFIG->site->email)) {
 		    // Use email address of current site if we cannot use sender's email
 		    $from = html_email_handler_make_rfc822_address($CONFIG->site);
 		} else {
 			// If all else fails, use the domain of the site.
-			$fallback_email = elgg_get_plugin_setting('fallback_email_options');
-			if(!$fallback_email){
-				$fallback_email = '<noreply&#64;' . get_site_domain($CONFIG->site_guid) . '>';
-			}
 			if(!empty($CONFIG->site->name)){
-				$from = $fallback_email;
+				$from = $CONFIG->site->name . " <noreply@" . get_site_domain($CONFIG->site_guid) . ">";
 			} else {
-				$from = $fallback_email;
+				$from = "noreply@" . get_site_domain($CONFIG->site_guid);
 			}
 		}
 		
