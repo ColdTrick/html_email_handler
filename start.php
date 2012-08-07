@@ -64,9 +64,12 @@
 		$to = html_email_handler_make_rfc822_address($to);
 
 		// From
-		// If there's an email address, use it - but only if its not from a user.
-		if (!($from instanceof ElggUser) && !empty($from->email)) {
-		    $from = html_email_handler_make_rfc822_address($from);
+		if($dedicated_email = elgg_get_plugin_setting('dedicated_email_option')){
+			// Use dedicated from email address, if one is set e.g. notifications@sitename.com
+		    $from = $from->name . " <" . $dedicated_email . ">";
+		}elseif(!($from instanceof ElggUser) && !empty($from->email)) {
+			// If there's an email address, use it - but only if its not from a user.
+			$from = html_email_handler_make_rfc822_address($from);
 		} elseif ($CONFIG->site && !empty($CONFIG->site->email)) {
 		    // Use email address of current site if we cannot use sender's email
 		    $from = html_email_handler_make_rfc822_address($CONFIG->site);

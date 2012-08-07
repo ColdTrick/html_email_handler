@@ -25,3 +25,9 @@
 	echo elgg_view("input/text", array("name" => "params[sendmail_options]", "value" => $plugin->sendmail_options));
 	echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:sendmail_options:description", array($site_email)) . "</div>";
 	echo "</div>";
+
+	echo "<div>";
+	echo elgg_echo("html_email_handler:settings:fallback_email");
+	echo elgg_view("input/text", array("name" => "params[dedicated_email_option]", "value" => $plugin->dedicated_email_option));
+	echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:fallback_email_options:description") . "</div>";
+	echo "</div>";
