@@ -18,24 +18,27 @@
 	 * @return BOOL true|false
 	 */
 	function html_email_handler_send_email(array $options = null){
-		global $CONFIG;
 		$result = false;
 		
+		$site = elgg_get_site_entity();
+		
 		// make site email
-		if(!empty($CONFIG->site->email)){
-			$sendmail_from = $CONFIG->site->email;
-			$site_from = $sendmail_from;
-			
-			if(!empty($CONFIG->site->name)){
-				$site_from = $CONFIG->site->name . " <" . $sendmail_from . ">";
-			}
+		if(!empty($site->email)){
+			$sendmail_from = $site->email;
+			$site_from = html_email_handler_make_rfc822_address($site);
 		} else {
 			// no site email, so make one up
-			$sendmail_from = "noreply@" . get_site_domain($CONFIG->site_guid);
+			$sendmail_from = "noreply@" . get_site_domain($site->getGUID());
 			$site_from = $sendmail_from;
 			
-			if(!empty($CONFIG->site->name)){
-				$site_from = $CONFIG->site->name . " <" . $sendmail_from . ">";
+			if(!empty($site->name)){
+				$site_name = $site->name;
+				if (strstr($site_name, ',')) {
+					$site_name = '"' . $site_name . '"'; // Protect the name with quotations if it contains a comma
+				}
+				
+				$site_name = '=?UTF-8?B?' . base64_encode($site_name) . '?='; // Encode the name. If may content nos ASCII chars.
+				$site_from = $site_name . " <" . $sendmail_from . ">";
 			}
 		}
 		
@@ -69,7 +72,7 @@
 		// can we send a message
 		if(!empty($options["to"]) && (!empty($options["html_message"]) || !empty($options["plaintext_message"]))){
 			// start preparing
-			$boundary = uniqid($CONFIG->site->name);
+			$boundary = uniqid($site->name);
 			
 			// start building headers
 			$headers = "";
@@ -207,6 +210,8 @@
 		    if (strstr($name, ',')) {
 		        $name = '"' . $name . '"'; // Protect the name with quotations if it contains a comma
 		    }
+		    
+		    $name = '=?UTF-8?B?' . base64_encode($name) . '?='; // Encode the name. If may content nos ASCII chars.
 			$addr = $name . " <" . $entity->email . ">";
 		} else {
 			$addr = $entity->email;
