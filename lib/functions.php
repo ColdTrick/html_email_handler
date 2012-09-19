@@ -207,6 +207,7 @@
 		    if (strstr($name, ',')) {
 		        $name = '"' . $name . '"'; // Protect the name with quotations if it contains a comma
 		    }
+		    $name = '=?UTF-8?B?' . base64_encode($name) . '?='; // Encode the name. If may content nos ASCII chars.
 			$addr = $name . " <" . $entity->email . ">";
 		} else {
 			$addr = $entity->email;
