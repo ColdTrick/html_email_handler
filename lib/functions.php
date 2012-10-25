@@ -81,9 +81,6 @@
 			} else {
 				$headers .= "From: " . $site_from . PHP_EOL;
 			}
-			$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
-			$headers .= "MIME-Version: 1.0" . PHP_EOL;
-			$headers .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
 
 			// check CC mail
 			if(!empty($options["cc"])){
@@ -94,6 +91,10 @@
 			if(!empty($options["bcc"])){
 				$headers .= "Bcc: " . implode(", ", $options["bcc"]) . PHP_EOL;
 			}
+
+			$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
+			$headers .= "MIME-Version: 1.0" . PHP_EOL;
+			$headers .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
 
 			// start building the message
 			$message = "";
