@@ -14,6 +14,7 @@
 	 * 		plaintext_message STR with the plaintext version of the message
 	 * 		cc => NULL|STR|ARR of CC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
 	 * 		bcc => NULL|STR|ARR of BCC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
+         * 		date => NULL|UNIX timestamp with the date the message was created
 	 * 
 	 * @return BOOL true|false
 	 */
@@ -52,7 +53,8 @@
 			"html_message" => "",
 			"plaintext_message" => "",
 			"cc" => array(),
-			"bcc" => array()
+			"bcc" => array(),
+			"date" => null,
 		);
 		
 		// merge options
@@ -91,6 +93,11 @@
 			if(!empty($options["bcc"])){
 				$headers .= "Bcc: " . implode(", ", $options["bcc"]) . PHP_EOL;
 			}
+
+                        // add a date header
+                        if($options["date"] !== null) {
+                            $headers .= "Date: " . date("r", $options["date"]) . PHP_EOL;                            
+                        }
 
 			$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
 			$headers .= "MIME-Version: 1.0" . PHP_EOL;
