@@ -1,10 +1,13 @@
 = Version history =
 x.x:
 
+- added: custom send date option (thanks to migrax https://github.com/migrax)
 - fixed: error in getting extra sendmail options
 - fixed: PHP notices
 - fixed: subject and to/from encoding (thanks to migrax https://github.com/migrax)
+- fixed: CC and BCC not working due to wrong placement of some headers (thanks to migrax https://github.com/migrax)
 - changed: registration of menu items
+- changed: some code cleanup
 
 2.2 (2012-03-02):
 

@@ -43,8 +43,7 @@
 	}
 
 	function html_email_handler_notification_handler(ElggEntity $from, ElggUser $to, $subject, $message, array $params = NULL){
-		global $CONFIG;
-
+		
 		if (!$from) {
 			$msg = elgg_echo("NotificationException:MissingParameter", array("from"));
 			throw new NotificationException($msg);
@@ -64,18 +63,25 @@
 		$to = html_email_handler_make_rfc822_address($to);
 
 		// From
+		$site = elgg_get_site_entity();
 		// If there's an email address, use it - but only if its not from a user.
 		if (!($from instanceof ElggUser) && !empty($from->email)) {
 		    $from = html_email_handler_make_rfc822_address($from);
-		} elseif ($CONFIG->site && !empty($CONFIG->site->email)) {
+		} elseif (!empty($site->email)) {
 		    // Use email address of current site if we cannot use sender's email
-		    $from = html_email_handler_make_rfc822_address($CONFIG->site);
+		    $from = html_email_handler_make_rfc822_address($site);
 		} else {
 			// If all else fails, use the domain of the site.
-			if(!empty($CONFIG->site->name)){
-				$from = $CONFIG->site->name . " <noreply@" . get_site_domain($CONFIG->site_guid) . ">";
+			if(!empty($site->name)){
+				$name = $site->name;
+				if (strstr($name, ',')) {
+					$name = '"' . $name . '"'; // Protect the name with quotations if it contains a comma
+				}
+				
+				$name = '=?UTF-8?B?' . base64_encode($name) . '?='; // Encode the name. If may content nos ASCII chars.
+				$from = $name . " <noreply@" . get_site_domain($site->getGUID()) . ">";
 			} else {
-				$from = "noreply@" . get_site_domain($CONFIG->site_guid);
+				$from = "noreply@" . get_site_domain($site->getGUID());
 			}
 		}
 		
@@ -91,7 +97,11 @@
 			"plaintext_message" => $message
 		);
 		
-		return html_email_handler_send_email(array_merge($options, $params));
+		if(!empty($params) && is_array($params)){
+			$options = array_merge($options, $params);
+		}
+		
+		return html_email_handler_send_email($options);
 	}
 
 	// register default Elgg events
