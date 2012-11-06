@@ -1,5 +1,5 @@
 = Version history =
-x.x:
+2.3 (2012-11-06):
 
 - added: custom send date option (thanks to migrax https://github.com/migrax)
 - fixed: error in getting extra sendmail options
