@@ -176,9 +176,24 @@
 	}
 
 	function html_email_handler_make_html_body($subject = "", $body = ""){
+		global $CONFIG;
+		
+		// in some cases when pagesetup isn't done yet this can cause problems
+		// so manualy set is to done
+		$unset = false;
+		if(!isset($CONFIG->pagesetupdone)){
+			$unset = true;
+			$CONFIG->pagesetupdone = true;
+		}
+		
 		// generate HTML mail body
 		$result = elgg_view("html_email_handler/notification/body", array("title" => $subject, "message" => parse_urls($body)));
 
+		// do we need to restore pagesetup
+		if($unset){
+			unset($CONFIG->pagesetupdone);
+		}
+		
 		if(defined("XML_DOCUMENT_NODE")){
 			if($transform = html_email_handler_css_inliner($result)){
 				$result = $transform;
