@@ -2,6 +2,7 @@
 x.x:
 
 - fixed: problem with pagesetupdone on some Elgg installations
+- fixed: mail message language now set correctly
 
 2.3 (2012-11-06):
 
