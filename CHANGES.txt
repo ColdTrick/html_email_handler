@@ -1,5 +1,5 @@
 = Version history =
-x.x:
+2.3.1 (2013-04-05):
 
 - fixed: problem with pagesetupdone on some Elgg installations
 - fixed: mail message language now set correctly
