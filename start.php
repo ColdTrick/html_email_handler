@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 	require_once(dirname(__FILE__) . "/lib/functions.php");
 	require_once(dirname(__FILE__) . "/lib/hooks.php");
@@ -92,7 +92,7 @@
 		$options = array(
 			"to" => $to,
 			"from" => $from,
-			"subject" => '=?UTF-8?B?' . base64_encode($subject) . '?=',
+			"subject" => $subject,
 			"html_message" => $html_message,
 			"plaintext_message" => $message
 		);

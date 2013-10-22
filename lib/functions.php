@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 	/**
-	 * 
+	 *
 	 * This function sends out a full HTML mail. It can handle several options
-	 * 
+	 *
 	 * This function requires the options 'to' and ('html_message' or 'plaintext_message')
-	 * 
+	 *
 	 * @param $options Array in the format:
 	 * 		to => STR|ARR of recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
 	 * 		from => STR of senden in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
@@ -15,7 +15,7 @@
 	 * 		cc => NULL|STR|ARR of CC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
 	 * 		bcc => NULL|STR|ARR of BCC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
 	 * 		date => NULL|UNIX timestamp with the date the message was created
-	 * 
+	 *
 	 * @return BOOL true|false
 	 */
 	function html_email_handler_send_email(array $options = null){
@@ -96,7 +96,7 @@
 
 			// add a date header
 			if(!empty($options["date"])) {
-				$headers .= "Date: " . date("r", $options["date"]) . PHP_EOL;                            
+				$headers .= "Date: " . date("r", $options["date"]) . PHP_EOL;
 			}
 
 			$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
@@ -129,7 +129,11 @@
 
 			// convert to to correct format
 			$to = implode(", ", $options["to"]);
-			$result = mail($to, $options["subject"], $message, $headers, $sendmail_options);
+			
+			// encode subject to handle special chars
+			$subject = "=?UTF-8?B?" . base64_encode($options["subject"]) . "?=";
+				
+			$result = mail($to, $subject, $message, $headers, $sendmail_options);
 		}
 
 		return $result;
