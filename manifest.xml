@@ -5,8 +5,10 @@
 	<version>2.3.1</version>
 	<description>Allows to send out full HTML mails / notifications</description>
 	<website>http://www.coldtrick.com/</website>
-	<copyright>(C) ColdTrick IT Solutions 2009 - 2013</copyright>
-	<license>GNU Public License version 2</license>
+	<repository>https://github.com/ColdTrick/html_email_handler</repository>
+	<bugtracker>https://github.com/ColdTrick/html_email_handler/issues</bugtracker>
+	<copyright>(C) ColdTrick IT Solutions 2011 - 2013</copyright>
+	<license>GNU General Public License version 2</license>
 	
 	<requires>
 		<type>elgg_release</type>
