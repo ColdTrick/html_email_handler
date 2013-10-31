@@ -1,6 +1,6 @@
 = Version history =
 
-x.x:
+2.4 (2013-10-31):
 
 - added: French translation thanks to Faclya (https://github.com/Facyla)(#6)
 - changed: README.txt to README.md for better readability on GitHub
