@@ -1,5 +1,9 @@
 = Version history =
 
+x.x:
+
+- added: Spanish translation thanks to Gonzalo (http://community.elgg.org/profile/GEARinvent)
+
 2.4 (2013-10-31):
 
 - added: French translation thanks to Faclya (https://github.com/Facyla)(#6)
