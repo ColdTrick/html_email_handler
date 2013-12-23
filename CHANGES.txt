@@ -3,6 +3,7 @@
 x.x:
 
 - added: Spanish translation thanks to Gonzalo (http://community.elgg.org/profile/GEARinvent)
+- changed: html_email_handler_make_rfc822_address() always return an email address, now falls back to site email
 
 2.4 (2013-10-31):
 

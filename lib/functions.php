@@ -232,6 +232,20 @@
 	 * @return string with the correctly formatted address
 	 */
 	function html_email_handler_make_rfc822_address(ElggEntity $entity) {
+		// get the email address of the entity
+		$email = $entity->email;
+		if (empty($email)) {
+			// no email found, fallback to site email
+			$site = elgg_get_site_entity();
+			
+			$email = $site->email;
+			if (empty($email)) {
+				// no site email, default to noreply
+				$email = "noreply@" . get_site_domain($site->getGUID());
+			}
+		}
+		
+		// build the RFC822 format
 		if(!empty($entity->name)){
 		    $name = $entity->name;
 		    if (strstr($name, ',')) {
@@ -239,10 +253,8 @@
 		    }
 		    
 		    $name = '=?UTF-8?B?' . base64_encode($name) . '?='; // Encode the name. If may content nos ASCII chars.
-			$addr = $name . " <" . $entity->email . ">";
-		} else {
-			$addr = $entity->email;
+			$email = $name . " <" . $email . ">";
 		}
-
-		return $addr;
+		
+		return $email;
 	}
