@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 	require_once(dirname(__FILE__) . "/lib/functions.php");
 	require_once(dirname(__FILE__) . "/lib/hooks.php");
@@ -11,6 +11,9 @@
 			
 			// register hook to handle the rest of the email being send
 			elgg_register_plugin_hook_handler("email", "system", "html_email_handler_email_hook");
+			
+			// register a hook to add a new hook that allows adding attachments
+		elgg_register_plugin_hook_handler('object:notifications', 'all', 'html_email_handler_object_notifications_hook');
 		}
 		
 		// register page_handler for nice URL's
@@ -92,7 +95,7 @@
 		$options = array(
 			"to" => $to,
 			"from" => $from,
-			"subject" => '=?UTF-8?B?' . base64_encode($subject) . '?=',
+			"subject" => $subject,
 			"html_message" => $html_message,
 			"plaintext_message" => $message
 		);
