@@ -1,5 +1,20 @@
 = Version history =
 
+2.6 (2014-02-19):
+- added file attachments support : 
+	* to use directly, provide notify_user with $params['attachments'] :
+		Warning : passing a file through filepath is not functionnal yet
+			$attachments[] = array(
+				'content' => $file_content, // File content
+				'filepath' => $file_content, // Alternate file path for file content retrieval
+				'filename' => $file_content, // Attachment file name
+				'mimetype' => $file_content, // MIME type of attachment
+			);
+	* to use for existing plugins, use e.g. the following hook :
+		elgg_register_plugin_hook_handler('notify:entity:params', 'object', 'events_attachment');
+		This should return an array that will be used in notify_user (same structure as above)
+		e.g.: return $options['attachments'] = $attachments;
+
 2.5 (2013-12-24):
 
 - added: Spanish translation thanks to Gonzalo (http://community.elgg.org/profile/GEARinvent)
@@ -7,7 +22,7 @@
 
 2.4 (2013-10-31):
 
-- added: French translation thanks to Faclya (https://github.com/Facyla)(#6)
+- added: French translation thanks to Facyla (https://github.com/Facyla)(#6)
 - changed: README.txt to README.md for better readability on GitHub
 - changed: CSS definitions of font-size from em to px, for better detection by SpamAssasin
 - changed: encoding of the subject moved to a later stage for more support #7
