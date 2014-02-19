@@ -11,6 +11,9 @@
 			
 			// register hook to handle the rest of the email being send
 			elgg_register_plugin_hook_handler("email", "system", "html_email_handler_email_hook");
+			
+			// register a hook to add a new hook that allows adding attachments
+		elgg_register_plugin_hook_handler('object:notifications', 'all', 'html_email_handler_object_notifications_hook');
 		}
 		
 		// register page_handler for nice URL's
@@ -87,14 +90,14 @@
 		
 		// generate HTML mail body
 		$html_message = html_email_handler_make_html_body($subject, $message);
-	
+		
 		// set options for sending
 		$options = array(
 			"to" => $to,
 			"from" => $from,
 			"subject" => $subject,
 			"html_message" => $html_message,
-			"plaintext_message" => $message
+			"plaintext_message" => $message,
 		);
 		
 		if(!empty($params) && is_array($params)){
