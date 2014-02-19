@@ -13,7 +13,7 @@
 			elgg_register_plugin_hook_handler("email", "system", "html_email_handler_email_hook");
 			
 			// register a hook to add a new hook that allows adding attachments
-		elgg_register_plugin_hook_handler('object:notifications', 'all', 'html_email_handler_object_notifications_hook');
+			elgg_register_plugin_hook_handler('object:notifications', 'all', 'html_email_handler_object_notifications_hook');
 		}
 		
 		// register page_handler for nice URL's
