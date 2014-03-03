@@ -68,6 +68,10 @@
 		// Get config data
 		global $CONFIG, $SESSION, $NOTIFICATION_HANDLERS;
 
+		// Facyla : warning, if a plugin hook returned "true" (e.g. for blocking notification process), 
+		// this wouldn't be handled, so we should check it before going through the whole process !!
+		if ($returnvalue === true) return true;
+
 		$event = $params['event'];
 		$object = $params['object'];
 		$object_type = $params['object_type'];
