@@ -1,5 +1,9 @@
 = Version history =
 
+x.x:
+
+- fixed: content from a WYSIWYG-editor has a different result in the e-mail
+
 2.5 (2013-12-24):
 
 - added: Spanish translation thanks to Gonzalo (http://community.elgg.org/profile/GEARinvent)
