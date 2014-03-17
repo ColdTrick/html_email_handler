@@ -117,6 +117,14 @@
 									$body = $string;
 								}
 								
+								// this is new, trigger a hook to make a custom subject
+								$new_subject = elgg_trigger_plugin_hook("notify:entity:subject", $object->getType(), array(
+									"entity" => $object,
+									"to_entity" => $user,
+									"method" => $method), $subject);
+								// Keep new value only if correct subject
+								if (!empty($new_subject)) { $subject = $new_subject; }
+								
 								// Params hook : see doc above
 								$options = elgg_trigger_plugin_hook('notify:entity:params', $object->getType(), array(
 									'entity' => $object,
