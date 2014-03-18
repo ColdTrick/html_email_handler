@@ -16,6 +16,10 @@ $french = array(
 	// notification body
 	'html_email_handler:notification:footer:settings' => "Configurez vos notifications %sen cliquant sur ce lien%s",
 	
+	// Object:notifications hooks control
+	'html_email_handler:settings:object_notifications_hook' => "Activer le hook sur object:notifications",
+	'html_email_handler:settings:object_notifications_hook:subtext' => "Ce hook permet à d'autres plugins d'ajouter facilement des pièces jointes aux emails envoyés, de la même manière qu'ils peuvent modifier le contenu des messages. Attention car il peut causer des problèmes de compatibilité dans certains cas, en bloquant l'utilisation du hook par d'autres plugins -notamment advanced_notifications- car il prend en charge le processus d'envoi et répond donc \"true\" au hook.<br />Si vous ne savez pas quoi faire, laissez le réglage par défaut.",
+
 );
 
 add_translation("fr", $french);

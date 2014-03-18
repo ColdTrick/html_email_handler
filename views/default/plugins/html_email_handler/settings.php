@@ -25,3 +25,10 @@
 	echo elgg_view("input/text", array("name" => "params[sendmail_options]", "value" => $plugin->sendmail_options));
 	echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:sendmail_options:description", array($site_email)) . "</div>";
 	echo "</div>";
+	
+	echo "<div>";
+	echo elgg_echo("html_email_handler:settings:object_notifications_hook");
+	echo "&nbsp;" . elgg_view("input/dropdown", array("name" => "params[object_notifications_hook]", "options_values" => $noyes_options, "value" => $plugin->object_notifications_hook));
+	echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:object_notifications_hook:subtext") . "</div>";
+	echo "</div>";
+	 
