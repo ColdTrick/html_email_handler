@@ -39,3 +39,26 @@ Please check if you have one (or more) of the following
 [phpmailer_url]: http://community.elgg.org/plugins/384769/1.0/phpmailer
 [html_mail_url]: http://community.elgg.org/plugins/566028/v1.0/html-mails
 [mail_queue_url]: http://community.elgg.org/plugins/616834/1.1/mail-queue
+
+
+3. File attachements notes and documentation
+--------------------------------------------
+
+File attachments support : 
+
+Attachments can be passed to notify_user with $params['attachments'] :
+Warning : don't use filepath setting, which is not functionnal yet
+	$attachments[] = array(
+		'content' => $file_content, // File content
+		//'filepath' => $file_content, // Alternate file path for file content retrieval
+		'filename' => $file_content, // Attachment file name
+		'mimetype' => $file_content, // MIME type of attachment
+	);
+
+
+You can also add file attachment support to existing plugins by using e.g. the following hook :
+	elgg_register_plugin_hook_handler('notify:entity:params', 'object', 'events_attachment');
+Then by registering to this new hook you can return an array that will be used in notify_user (same structure as above)
+e.g.: return $options['attachments'] = $attachments;
+
+

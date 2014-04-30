@@ -104,6 +104,7 @@
 
 			$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
 			$headers .= "MIME-Version: 1.0" . PHP_EOL;
+
 			// Facyla : try to add attchments if set
 			// Allow to add single or multiple attachments
 			if(!empty($options["attachments"])) {
@@ -168,6 +169,7 @@
 
 			// Final boundry
 			$message .= "--" . $boundary . "--" . PHP_EOL;
+
 			// Facyla : FILE part of message
 			if(!empty($attachments)) {
 				// Build strings that will be added before TEXT/HTML message
