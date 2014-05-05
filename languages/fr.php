@@ -15,7 +15,6 @@ $french = array(
 	
 	// notification body
 	'html_email_handler:notification:footer:settings' => "Configurez vos notifications %sen cliquant sur ce lien%s",
-	
 );
 
 add_translation("fr", $french);

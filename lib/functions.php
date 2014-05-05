@@ -15,6 +15,7 @@
 	 * 		cc => NULL|STR|ARR of CC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
 	 * 		bcc => NULL|STR|ARR of BCC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
 	 * 		date => NULL|UNIX timestamp with the date the message was created
+	 * 		attachments => NULL|ARR of array('mimetype', 'filename', 'content')
 	 *
 	 * @return BOOL true|false
 	 */
@@ -74,7 +75,9 @@
 		// can we send a message
 		if(!empty($options["to"]) && (!empty($options["html_message"]) || !empty($options["plaintext_message"]))){
 			// start preparing
-			$boundary = uniqid($site->name);
+			// Facyla : better without spaces and special chars
+			//$boundary = uniqid($site->name);
+			$boundary = uniqid(friendly_title($site->name));
 			
 			// start building headers
 			$headers = "";
@@ -101,7 +104,53 @@
 
 			$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
 			$headers .= "MIME-Version: 1.0" . PHP_EOL;
-			$headers .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+
+			// Facyla : try to add attchments if set
+			// Allow to add single or multiple attachments
+			if(!empty($options["attachments"])) {
+				
+				$attachments = '';
+				
+				$attachment_counter = 0;
+				foreach($options["attachments"] as $attachment) {
+					
+					// Alternatively fetch content based on a real file on server : 
+					// use $attachment['filepath'] to load file content in $attachment['content']
+					// @TODO : This has not been tested yet... careful !
+					if (empty($attachment['content']) && !empty($attachment['filepath'])) {
+						$attachment['content'] = chunk_split(base64_encode(file_get_contents($attachment['filepath'])));
+					}
+				
+					// Cannot attach an empty file in any case..
+					if (empty($attachment['content'])) {
+						continue;
+					}
+				
+					// Count valid attachments
+					$attachment_counter++;
+				
+					// Use defaults for other less critical settings
+					if (empty($attachment['mimetype'])) {
+						$attachment['mimetype'] = 'application/octet-stream';
+					}
+					if (empty($attachment['filename'])) {
+						$attachment['filename'] = 'file_' . $attachment_counter;
+					}
+				
+					$attachments .= "Content-Type: {" . $attachment['mimetype'] . "};" . PHP_EOL . " name=\"" . $attachment['filename'] . "\"" . PHP_EOL;
+					$attachments .= "Content-Disposition: attachment;" . PHP_EOL . " filename=\"" . $attachment['filename'] . "\"" . PHP_EOL;
+					$attachments .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
+					$attachments .= $attachment['content'] . PHP_EOL . PHP_EOL;
+					$attachments .= "--mixed--" . $boundary . PHP_EOL;
+				}
+			}
+			
+			// Use attachments headers for real only if they are valid
+			if(!empty($attachments)) {
+				$headers .= "Content-Type: multipart/mixed; boundary=\"mixed--" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+			} else {
+				$headers .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+			}
 
 			// start building the message
 			$message = "";
@@ -126,6 +175,19 @@
 
 			// Final boundry
 			$message .= "--" . $boundary . "--" . PHP_EOL;
+
+			// Facyla : FILE part of message
+			if(!empty($attachments)) {
+				// Build strings that will be added before TEXT/HTML message
+				$before_message = "--mixed--" . $boundary . PHP_EOL;
+				$before_message .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+				// Build strings that will be added after TEXT/HTML message
+				$after_message = PHP_EOL;
+				$after_message .= "--mixed--" . $boundary . PHP_EOL;
+				$after_message .= $attachments;
+				// Wrap TEXT/HTML message into mixed message content
+				$message = $before_message . PHP_EOL . $message . PHP_EOL . $after_message;
+			}
 
 			// convert to to correct format
 			$to = implode(", ", $options["to"]);

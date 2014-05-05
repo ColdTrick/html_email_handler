@@ -17,6 +17,7 @@ Contents
 	- see /lib/functions.php for more information
 - Offers CSS conversion to inline CSS (needed for webmail support) html_email_handler_css_inliner($html_text)
 	- see lib/functions.php for more information
+- Allows file attachments support in notify_user (see File attachments support below)
 
 ###1.1. Administrators, Developers & Designers
 If you have the **[developers][developers_url]** plugin enabled you can easily design the layout of your HTML message, check the Theming sandbox. <br />
@@ -37,3 +38,21 @@ Please check if you have one (or more) of the following
 [phpmailer_url]: http://community.elgg.org/plugins/384769/1.0/phpmailer
 [html_mail_url]: http://community.elgg.org/plugins/566028/v1.0/html-mails
 [mail_queue_url]: http://community.elgg.org/plugins/616834/1.1/mail-queue
+
+
+3. File attachements notes and documentation
+--------------------------------------------
+
+File attachments support : 
+
+If you wish to add file attachments to email notifications, you can use the notify_user function and pass it an "attachments" key, with $params['attachments'] :
+	$attachments[] = array(
+		'content' => $file_content, // File content
+		//'filepath' => $file_content, // Alternate file path for file content retrieval
+		'filename' => $file_content, // Attachment file name
+		'mimetype' => $file_content, // MIME type of attachment
+	);
+Note that $attachments is an array, so you can pass several files at once, each with a custom filename and MIME type.
+Warning : don't use 'filepath' setting on a production site (not functionnal yet)
+
+

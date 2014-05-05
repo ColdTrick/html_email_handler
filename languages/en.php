@@ -15,7 +15,6 @@
 		
 		// notification body
 		'html_email_handler:notification:footer:settings' => "Configure your notification settings %shere%s",
-		
 	);
 
 	add_translation("en", $english);

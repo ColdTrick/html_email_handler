@@ -26,5 +26,10 @@
 			"plaintext_message" => $params["body"]
 		);
 		
+		// Add optional attachments
+		if ($params['attachments']) {
+			$options['attachments'] = $params["attachments"];
+		}
+		
 		return html_email_handler_send_email($options);
 	}
