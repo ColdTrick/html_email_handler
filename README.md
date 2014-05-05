@@ -17,8 +17,7 @@ Contents
 	- see /lib/functions.php for more information
 - Offers CSS conversion to inline CSS (needed for webmail support) html_email_handler_css_inliner($html_text)
 	- see lib/functions.php for more information
-- Allows sending of file attachments
-	- see /lib/functions.php and /lib/hooks.php for more information
+- Allows file attachments support in notify_user (see File attachments support below)
 
 ###1.1. Administrators, Developers & Designers
 If you have the **[developers][developers_url]** plugin enabled you can easily design the layout of your HTML message, check the Theming sandbox. <br />

@@ -13,7 +13,6 @@
 	 * 		body 	=> message
 	 * 		params 	=> optional params
 	 */
-
 	function html_email_handler_email_hook($hook, $type, $return, $params){
 		// generate HTML mail body
 		$html_message = html_email_handler_make_html_body($params["subject"], $params["body"]);
@@ -32,4 +31,3 @@
 		
 		return html_email_handler_send_email($options);
 	}
-

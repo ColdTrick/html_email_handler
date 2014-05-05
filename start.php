@@ -11,7 +11,6 @@
 			
 			// register hook to handle the rest of the email being send
 			elgg_register_plugin_hook_handler("email", "system", "html_email_handler_email_hook");
-			
 		}
 		
 		// register page_handler for nice URL's
