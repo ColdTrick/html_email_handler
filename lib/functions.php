@@ -122,14 +122,20 @@
 					}
 				
 					// Cannot attach an empty file in any case..
-					if (empty($attachment['content'])) { continue; }
+					if (empty($attachment['content'])) {
+						continue;
+					}
 				
 					// Count valid attachments
 					$attachment_counter++;
 				
 					// Use defaults for other less critical settings
-					if (empty($attachment['mimetype'])) $attachment['mimetype'] = 'application/octet-stream';
-					if (empty($attachment['filename'])) $attachment['filename'] = 'file_' . $attachment_counter;
+					if (empty($attachment['mimetype'])) {
+						$attachment['mimetype'] = 'application/octet-stream';
+					}
+					if (empty($attachment['filename'])) {
+						$attachment['filename'] = 'file_' . $attachment_counter;
+					}
 				
 					$attachments .= "Content-Type: {" . $attachment['mimetype'] . "};" . PHP_EOL . " name=\"" . $attachment['filename'] . "\"" . PHP_EOL;
 					$attachments .= "Content-Disposition: attachment;" . PHP_EOL . " filename=\"" . $attachment['filename'] . "\"" . PHP_EOL;
@@ -176,7 +182,7 @@
 				$before_message = "--mixed--" . $boundary . PHP_EOL;
 				$before_message .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
 				// Build strings that will be added after TEXT/HTML message
-				$after_message .= PHP_EOL;
+				$after_message = PHP_EOL;
 				$after_message .= "--mixed--" . $boundary . PHP_EOL;
 				$after_message .= $attachments;
 				// Wrap TEXT/HTML message into mixed message content
