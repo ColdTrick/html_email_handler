@@ -46,19 +46,14 @@ Please check if you have one (or more) of the following
 
 File attachments support : 
 
-Attachments can be passed to notify_user with $params['attachments'] :
-Warning : don't use filepath setting, which is not functionnal yet
+If you wish to add file attachments to email notifications, you can use the notify_user function and pass it an "attachments" key, with $params['attachments'] :
 	$attachments[] = array(
 		'content' => $file_content, // File content
 		//'filepath' => $file_content, // Alternate file path for file content retrieval
 		'filename' => $file_content, // Attachment file name
 		'mimetype' => $file_content, // MIME type of attachment
 	);
-
-
-You can also add file attachment support to existing plugins by using e.g. the following hook :
-	elgg_register_plugin_hook_handler('notify:entity:params', 'object', 'events_attachment');
-Then by registering to this new hook you can return an array that will be used in notify_user (same structure as above)
-e.g.: return $options['attachments'] = $attachments;
+Note that $attachments is an array, so you can pass several files at once, each with a custom filename and MIME type.
+Warning : don't use 'filepath' setting on a production site (not functionnal yet)
 
 
