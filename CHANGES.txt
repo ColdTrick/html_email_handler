@@ -1,7 +1,8 @@
 = Version history =
 
-x.x:
+2.6 (2014-07-01):
 
+- added: file attachment support #10 thanks to Facyla
 - fixed: content from a WYSIWYG-editor has a different result in the e-mail
 
 2.5 (2013-12-24):
