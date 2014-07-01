@@ -1,4 +1,10 @@
-= Version history =
+Version history
+===============
+
+3.0:
+
+- changes for Elgg 1.9
+- updated the version of Emogrifier
 
 2.6 (2014-07-01):
 
