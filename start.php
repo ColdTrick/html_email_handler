@@ -74,7 +74,7 @@ function html_email_handler_page_handler($page) {
  * @param ElggUser   $to      to which user should met message be sent
  * @param string     $subject message subject
  * @param string     $message message body
- * @param array      $params supplied params
+ * @param array      $params  supplied params
  *
  * @throws NotificationException
  *
@@ -104,10 +104,10 @@ function html_email_handler_notification_handler(ElggEntity $from, ElggUser $to,
 	$site = elgg_get_site_entity();
 	// If there's an email address, use it - but only if its not from a user.
 	if (!($from instanceof ElggUser) && !empty($from->email)) {
-	    $from = html_email_handler_make_rfc822_address($from);
+		$from = html_email_handler_make_rfc822_address($from);
 	} elseif (!empty($site->email)) {
-	    // Use email address of current site if we cannot use sender's email
-	    $from = html_email_handler_make_rfc822_address($site);
+		// Use email address of current site if we cannot use sender's email
+		$from = html_email_handler_make_rfc822_address($site);
 	} else {
 		// If all else fails, use the domain of the site.
 		if (!empty($site->name)) {
