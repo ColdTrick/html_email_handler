@@ -243,9 +243,9 @@ function html_email_handler_css_inliner($html_text) {
 }
 
 /**
- * Make the HTML body from a $subjec and $body
+ * Make the HTML body from a $options array
  *
- * @param string $subject the message subject
+ * @param string $options the options
  * @param string $body    the message body
  *
  * @return string
