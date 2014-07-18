@@ -77,7 +77,7 @@ function html_email_handler_send_email(array $options = null) {
 		// start preparing
 		// Facyla : better without spaces and special chars
 		//$boundary = uniqid($site->name);
-		$boundary = uniqid(friendly_title($site->name));
+		$boundary = uniqid(elgg_get_friendly_title($site->name));
 		
 		// start building headers
 		$headers = "";
