@@ -201,21 +201,29 @@ function html_email_handler_send_email(array $options = null) {
 				$mail->SMTPAuth = true;
                                 $mail->Host = 'localhost';
 				$mail->Username = 'noreply@philaquarters.com';
-				$mail->Password = 'pa55w0rd';
+				$mail->Password = 'password';
 				$mail->WordWrap = 50;
 				$mail->AuthType ='PLAIN';
-				$mail->Debugoutput='error_log';
+				//$mail->Debugoutput='error_log';
 				$mail->isHTML(true);
 				$mail->Subject =$options["subject"];
 				if(empty($options["from"])){
 					$mail->From=$options["from"];
 				}else{
-				      $mail->From = 'noreply@philaquarters.com';
+				      $mail->From = $site_from;
 				      $mail->FromName = $site_name;
-                                      $mail->addReplyTo('contact@philaquarters.com', 'PhilaQuarters');
+                                      //$mail->addReplyTo('contact@philaquarters.com', 'PhilaQuarters');
 				};
-
-				$mail->SMTPDebug = 4; //Low Level data
+                                if(!empty($options["attachments"])) {
+                                    foreach ($options["attachments"] as $attachment) {
+                                        $mail->addAttachment($attachment["filepath"]);
+                                    };
+                                }
+                                foreach($options["to"] as $to) $mail->addAddress($to);
+                                if(!empty($options["cc"])) {
+                                    foreach($options["cc"] as $cc) $mail->addCC($cc);
+                                }
+				//$mail->SMTPDebug = 4; //Low Level data
                                 $result=$mail->send();
                                 if (!$result) {
                                     trigger_error("Mailer Error: " . $mail->ErrorInfo);
