@@ -197,6 +197,7 @@ function html_email_handler_send_email(array $options = null) {
 			if(true){ //SMTP Mail Required
                                 require_once realpath(dirname(__FILE__)) . "/phpmail/class.phpmailer.php";
 				$mail = new PHPMailer;
+                                $mail->setLanguage(elgg.config.get_language());//set the same language of the elgg user
 				$mail->isSMTP();                                      // Set mailer to use SMTP
 				$mail->SMTPAuth = true;
                                 $mail->Host = 'localhost';
@@ -207,7 +208,7 @@ function html_email_handler_send_email(array $options = null) {
 				//$mail->Debugoutput='error_log';
 				$mail->isHTML(true);
 				$mail->Subject =$options["subject"];
-				if(empty($options["from"])){
+				if(!empty($options["from"])){
 					$mail->From=$options["from"];
 				}else{
 				      $mail->From = $site_from;
