@@ -25,3 +25,19 @@ echo elgg_echo("html_email_handler:settings:sendmail_options");
 echo elgg_view("input/text", array("name" => "params[sendmail_options]", "value" => $plugin->sendmail_options));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:sendmail_options:description", array($site_email)) . "</div>";
 echo "</div>";
+
+echo "<div>";
+echo elgg_echo("html_email_handler:settings:smtp_server");
+echo elgg_view("input/text", array("name" => "params[smtp_server]", "value" => $plugin->smtp_server));
+echo elgg_echo("html_email_handler:settings:smtp_port");
+echo elgg_view("input/text", array("name" => "params[smtp_port]", "value" => $plugin->smtp_port));
+echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_server:description") . "</div>";
+echo "</div>";
+
+echo "<div>";
+echo elgg_echo("html_email_handler:settings:smtp_usr");
+echo elgg_view("input/text", array("name" => "params[smtp_user]", "value" => $plugin->smtp_user));
+echo elgg_echo("html_email_handler:settings:smtp_pwd");
+echo elgg_view("input/text", array("name" => "params[smtp_pwd]", "value" => $plugin->smtp_pwd));
+echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_usrpwd:description") . "</div>";
+echo "</div>";
