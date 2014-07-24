@@ -199,6 +199,7 @@ function html_email_handler_send_email(array $options = null) {
 				$mail = new PHPMailer;
 				$mail->isSMTP();                                      // Set mailer to use SMTP
 				$mail->SMTPAuth = true;
+                                $mail->CharSet = 'UTF-8'; // just in case user updates phpmailer
                                 $mail->Host = 'localhost';
 				$mail->Username = 'noreply@philaquarters.com';
 				$mail->Password = 'pa55w0rd';
@@ -207,14 +208,17 @@ function html_email_handler_send_email(array $options = null) {
 				$mail->Debugoutput='error_log';
 				$mail->isHTML(true);
 				$mail->Subject =$options["subject"];
-				if(empty($options["from"])){
+				if(!empty($options["from"])){
 					$mail->From=$options["from"];
 				}else{
-				      $mail->From = 'noreply@philaquarters.com';
+				      $mail->From = $site_from;
 				      $mail->FromName = $site_name;
-                                      $mail->addReplyTo('contact@philaquarters.com', 'PhilaQuarters');
+                                      //$mail->addReplyTo('contact@philaquarters.com', 'PhilaQuarters');
 				};
-
+                                foreach($options["to"] as $to) $mail->addAddress($to);
+                                if(!empty($options["cc"])) foreach($options["cc"] as $cc) $mail->addCC ($cc);
+                                if(!empty($options["bcc"])) foreach($options["bcc"] as $bcc) $mail->addBCC($bcc);
+                                if(!empty($options["attachments"])) foreach($options["attachments"] as $attachment) $mail->addAttachment($attachment["filepath"]);
 				$mail->SMTPDebug = 4; //Low Level data
                                 $result=$mail->send();
                                 if (!$result) {
