@@ -194,19 +194,28 @@ function html_email_handler_send_email(array $options = null) {
 
 		// encode subject to handle special chars
 		$subject = "=?UTF-8?B?" . base64_encode($options["subject"]) . "?=";
-			if(true){ //SMTP Mail Required
+                $smtp_server=trim(elgg_get_plugin_setting("smtp_server", "html_email_handler"));
+			if($smtp_server !=""){ //SMTP Mail specified
                                 require_once realpath(dirname(__FILE__)) . "/phpmail/class.phpmailer.php";
 				$mail = new PHPMailer;
 				$mail->isSMTP();                                      // Set mailer to use SMTP
-				$mail->SMTPAuth = true;
-                                $mail->CharSet = 'UTF-8'; // just in case user updates phpmailer
-                                $mail->Host = 'localhost';
-				$mail->Username = 'noreply@philaquarters.com';
-				$mail->Password = 'pa55w0rd';
+				$mail->isHTML(true); //setting due to primary function of plugin
+                                $mail->CharSet = 'UTF-8'; // since Elgg supports internationalization
+                                $mail->setLanguage(elgg.config.get_language()); //Set Elgg language as plugin language
+                                $mail->Host = $smtp_server;
+                                $smtp_user = trim(elgg_get_plugin_setting("smtp_user", "html_email_handler"));
+                                $secure = (elgg_get_plugin_setting("smtp_contype", "html_email_handler")=="na") ? "" : elgg_get_plugin_setting("smtp_contype", "html_email_handler");
+                                $mail->SMTPSecure = $secure;
+                                $port = (elgg_get_plugin_setting("smtp_port", "html_email_handler")=="") ? 25 : intval(elgg_get_plugin_setting("smtp_port", "html_email_handler"));
+                                $mail->Port = $port;
+                                if($smtp_user != ""){
+                                    $mail->SMTPAuth = true;
+                                    $mail->Username = $smtp_user;
+                                    $mail->Password = trim(elgg_get_plugin_setting("smtp_pass", "html_email_handler"));
+                                    $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler");
+                                };
 				$mail->WordWrap = 50;
-				$mail->AuthType ='PLAIN';
 				$mail->Debugoutput='error_log';
-				$mail->isHTML(true);
 				$mail->Subject =$options["subject"];
 				if(!empty($options["from"])){
 					$mail->From=$options["from"];

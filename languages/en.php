@@ -17,9 +17,18 @@
                 'html_email_handler:settings:smtp_server:description' => "If you need to send email via your own mail server specify it here. If its blank sendmail is automatically used.",
 
                 'html_email_handler:settings:smtp_port' => "SMTP Server port number to use (optional)",
-                'html_email_handler:settings:smtp_server:description' => "This is valid only if SMTP Server is specified. If its blank default port of 25 is used",
+                'html_email_handler:settings:smtp_port:description' => "This is valid only if SMTP Server is specified. If its blank default port of 25 is used",
             
-                // notification body
+                'html_email_handler:settings:smtp_user' => "SMTP Athentication Username (optional)",
+                'html_email_handler:settings:smtp_user:description' => "This is valid only if SMTP Server is specified. If its blank anonymous login will be attempted",
+
+                'html_email_handler:settings:smtp_pass' => "SMTP Athentication Password (optional)",
+                'html_email_handler:settings:smtp_pass:description' => "This is valid only if SMTP Server/User is specified.Specifies the password for the SMTP user",
+
+                'html_email_handler:settings:smtp_contype' => "Secure connection ?",
+                'html_email_handler:settings:smtp_contype:description' => "Specify whether the SMTP connection is secure(SSL/TLS) or unencrypted",
+
+            // notification body
 		'html_email_handler:notification:footer:settings' => "Configure your notification settings %shere%s",
 	);
 
