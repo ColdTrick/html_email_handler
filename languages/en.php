@@ -12,14 +12,26 @@
 		
 		'html_email_handler:settings:sendmail_options' => "Additional parameters for use with sendmail (optional)",
 		'html_email_handler:settings:sendmail_options:description' => "Here you can configure additional setting when using sendmail, for example -f %s (to better prevent mails being marked as spam)",
-                'html_email_handler:settings:smtp_server' => "Mail Server (SMTP) Name or IP:",
-                'html_email_handler:settings:smtp_port' => "Mail Server (SMTP) port number:(default=25)",
-                'html_email_handler:settings:smtp_server:description' => "Specify SMTP Server IP Address or name to use for sending emails. Leave blank to use sendmail.Default port is 25",
-	        'html_email_handler:settings:smtp_usr' => "SMTP Username",
-                'html_email_handler:settings:smtp_pwd' => "SMTP Password",
-                'html_email_handler:settings:smtp_usrpwd:description' => "If left blank,it will be assumed that authentication is not required ",
 		
-		// notification body
+                'html_email_handler:settings:smtp_server' => "SMTP Server IP or Name (optional)",
+                'html_email_handler:settings:smtp_server:description' => "If you need to send email via your own mail server specify it here. If its blank sendmail is automatically used.",
+
+                'html_email_handler:settings:smtp_port' => "SMTP Server port number to use (optional)",
+                'html_email_handler:settings:smtp_port:description' => "This is valid only if SMTP Server is specified. If its blank default port of 25 is used",
+            
+                'html_email_handler:settings:smtp_user' => "SMTP Athentication Username (optional)",
+                'html_email_handler:settings:smtp_user:description' => "This is valid only if SMTP Server is specified. If its blank anonymous login will be attempted",
+
+                'html_email_handler:settings:smtp_pass' => "SMTP Athentication Password (optional)",
+                'html_email_handler:settings:smtp_pass:description' => "This is valid only if SMTP Server/User is specified.Specifies the password for the SMTP user",
+
+                'html_email_handler:settings:smtp_authtype' => "Authentication Settings",
+                'html_email_handler:settings:smtp_authtype:description' => "Determines how the username/password should be sent to server. Please refer your smtp server manuals for details",
+
+                'html_email_handler:settings:smtp_contype' => "Secure connection ?",
+                'html_email_handler:settings:smtp_contype:description' => "Specify whether the SMTP connection is secure(SSL/TLS) or unencrypted",
+
+            // notification body
 		'html_email_handler:notification:footer:settings' => "Configure your notification settings %shere%s",
 	);
 
