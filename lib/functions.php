@@ -231,7 +231,7 @@ function html_email_handler_send_email(array $options = null) {
 				$mail->SMTPDebug = 3; //Connection+Data:Commands
                                 $result=$mail->send();
                                 if (!$result) {
-                                    trigger_error("Mailer Error: " . $mail->ErrorInfo);
+                                    register_error("Mailer Error: " . $mail->ErrorInfo);
                                 } ;
                                 
                         }else{
