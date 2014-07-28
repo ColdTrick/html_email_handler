@@ -197,7 +197,8 @@ function html_email_handler_send_email(array $options = null) {
                 $smtp_server=trim(elgg_get_plugin_setting("smtp_server", "html_email_handler"));
                 
 			if($smtp_server !=""){ //SMTP Mail specified
-                                require_once realpath(dirname(__FILE__)) . "/phpmail/class.phpmailer.php";
+                                //require_once realpath(dirname(__FILE__)) . "/phpmail/class.phpmailer.php";
+                                require_once realpath(dirname(__FILE__)) . "/phpmail/PHPMailerAutoload.php";
 				$mail = new PHPMailer;
 				$mail->isSMTP();                                      // Set mailer to use SMTP Server
 				$mail->isHTML(true); //setting due to primary function of plugin (sending mail in html template)
