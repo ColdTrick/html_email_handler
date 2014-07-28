@@ -47,7 +47,7 @@ echo "</div>";
 
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_port");
-echo elgg_view("input/text", array("name" => "params[smtp_port]", "value" => elgg_get_plugin_setting("smtp_port", "html_email_handler")));
+echo elgg_view("input/text", array("name" => "params[smtp_port]", "value" => $plugin->smtp_port));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_port:description") . "</div>";
 echo "</div>";
 
@@ -65,12 +65,12 @@ echo "</div>";
 
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_contype");
-echo elgg_view("input/dropdown", array("name" => "params[smtp_contype]", "options_values" =>$conn_options, elgg_get_plugin_setting("smtp_contype", "html_email_handler"), "class" => "mls"));
+echo elgg_view("input/dropdown", array("name" => "params[smtp_contype]", "options_values" =>$conn_options, $plugin->smtp_contype, "class" => "mls"));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_contype:description") . "</div>";
 echo "</div>";
 
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_authtype");
-echo elgg_view("input/dropdown", array("name" => "params[smtp_authtype]", "options_values" =>$auth_options, elgg_get_plugin_setting("smtp_authtype", "html_email_handler"), "class" => "mls"));
+echo elgg_view("input/dropdown", array("name" => "params[smtp_authtype]", "options_values" =>$auth_options, $plugin->smtp_authtype, "class" => "mls"));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_authtype:description") . "</div>";
 echo "</div>";
