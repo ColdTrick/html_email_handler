@@ -25,6 +25,9 @@
                 'html_email_handler:settings:smtp_pass' => "SMTP Athentication Password (optional)",
                 'html_email_handler:settings:smtp_pass:description' => "This is valid only if SMTP Server/User is specified.Specifies the password for the SMTP user",
 
+                'html_email_handler:settings:smtp_authtype' => "Authentication Settings",
+                'html_email_handler:settings:smtp_authtype:description' => "Determines how the username/password should be sent to server. Please refer your smtp server manuals for details",
+
                 'html_email_handler:settings:smtp_contype' => "Secure connection ?",
                 'html_email_handler:settings:smtp_contype:description' => "Specify whether the SMTP connection is secure(SSL/TLS) or unencrypted",
 

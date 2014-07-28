@@ -195,24 +195,25 @@ function html_email_handler_send_email(array $options = null) {
 		// encode subject to handle special chars
 		$subject = "=?UTF-8?B?" . base64_encode($options["subject"]) . "?=";
                 $smtp_server=trim(elgg_get_plugin_setting("smtp_server", "html_email_handler"));
+                
 			if($smtp_server !=""){ //SMTP Mail specified
                                 require_once realpath(dirname(__FILE__)) . "/phpmail/class.phpmailer.php";
 				$mail = new PHPMailer;
-				$mail->isSMTP();                                      // Set mailer to use SMTP
-				$mail->isHTML(true); //setting due to primary function of plugin
+				$mail->isSMTP();                                      // Set mailer to use SMTP Server
+				$mail->isHTML(true); //setting due to primary function of plugin (sending mail in html template)
                                 $mail->CharSet = 'UTF-8'; // since Elgg supports internationalization
-                                $mail->setLanguage(elgg.config.get_language()); //Set Elgg language as plugin language
+                                $mail->setLanguage(elgg.config.get_language()); //Set Elgg current language as plugin(PHPMailer) language
                                 $mail->Host = $smtp_server;
                                 $smtp_user = trim(elgg_get_plugin_setting("smtp_user", "html_email_handler"));
                                 $secure = (elgg_get_plugin_setting("smtp_contype", "html_email_handler")=="na") ? "" : elgg_get_plugin_setting("smtp_contype", "html_email_handler");
-                                $mail->SMTPSecure = $secure;
-                                $port = (elgg_get_plugin_setting("smtp_port", "html_email_handler")=="") ? 25 : intval(elgg_get_plugin_setting("smtp_port", "html_email_handler"));
+                                if($secure !="") $mail->SMTPSecure = $secure; //Only if SSL or TLS is specified
+                                $port = (trim(elgg_get_plugin_setting("smtp_port", "html_email_handler"))=="") ? 25 : intval(elgg_get_plugin_setting("smtp_port", "html_email_handler")); //default 25 or get the one that is set
                                 $mail->Port = $port;
                                 if($smtp_user != ""){
                                     $mail->SMTPAuth = true;
                                     $mail->Username = $smtp_user;
                                     $mail->Password = trim(elgg_get_plugin_setting("smtp_pass", "html_email_handler"));
-                                    $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler");
+                                    $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler"); //PLAIN,MD5-CRAM,LOGIN(default)
                                 };
 				$mail->WordWrap = 50;
 				$mail->Debugoutput='error_log';
@@ -222,21 +223,23 @@ function html_email_handler_send_email(array $options = null) {
 				}else{
 				      $mail->From = $site_from;
 				      $mail->FromName = $site_name;
-                                      //$mail->addReplyTo('contact@philaquarters.com', 'PhilaQuarters');
 				};
                                 foreach($options["to"] as $to) $mail->addAddress($to);
                                 if(!empty($options["cc"])) foreach($options["cc"] as $cc) $mail->addCC ($cc);
                                 if(!empty($options["bcc"])) foreach($options["bcc"] as $bcc) $mail->addBCC($bcc);
                                 if(!empty($options["attachments"])) foreach($options["attachments"] as $attachment) $mail->addAttachment($attachment["filepath"]);
-				$mail->SMTPDebug = 4; //Low Level data
+				$mail->SMTPDebug = 3; //Connection+Data:Commands
                                 $result=$mail->send();
                                 if (!$result) {
-                                    trigger_error("Mailer Error: " . $mail->ErrorInfo);
+                                    register_error("Mailer Error: " . $mail->ErrorInfo);
                                 } ;
+                                
                         }else{
                             $result = mail($to, $subject, $message, $headers, $sendmail_options);
 			};
-	}
+
+            }
+            
 
 	return $result;
 }
