@@ -218,7 +218,7 @@ function html_email_handler_send_email(array $options = null) {
 				$mail->WordWrap = 50;
 				$mail->Debugoutput='error_log';
 				$mail->Subject =$options["subject"];
-                                $mail->msgHTML($options["html_message"]); //plaintext will be prepared automatically
+                                $mail->Body=$options["html_message"]; //plaintext will be prepared automatically
                                 
 				if(!empty($options["from"])){
 					$mail->From=$options["from"];
