@@ -216,12 +216,12 @@ function html_email_handler_send_email(array $options = null) {
                                     $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler"); //PLAIN,MD5-CRAM,LOGIN(default)
                                 };
 				$mail->WordWrap = 50;
-				$mail->Debugoutput='error_log';
-				$mail->Subject =$options["subject"];
-                                $mail->Body=$options["html_message"]; //plaintext will be prepared automatically
+				$mail->Debugoutput = 'error_log';
+				$mail->Subject = $options["subject"];
+                                $mail->Body = $options["html_message"]; //plaintext will be prepared automatically
                                 
 				if(!empty($options["from"])){
-					$mail->From=$options["from"];
+					$mail->From = $options["from"];
 				}else{
 				      $mail->From = $site_from;
 				      $mail->FromName = $site_name;
