@@ -202,7 +202,7 @@ function html_email_handler_send_email(array $options = null) {
 				$mail->isSMTP();                                      // Set mailer to use SMTP Server
 				$mail->isHTML(true); //setting due to primary function of plugin (sending mail in html template)
                                 $mail->CharSet = 'UTF-8'; // since Elgg supports internationalization
-                                $mail->setLanguage(elgg.config.get_language()); //Set Elgg current language as plugin(PHPMailer) language
+                                //$mail->setLanguage(elgg.config.get_language()); //Set Elgg current language as plugin(PHPMailer) language
                                 $mail->Host = $smtp_server;
                                 $smtp_user = trim(elgg_get_plugin_setting("smtp_user", "html_email_handler"));
                                 $secure = (elgg_get_plugin_setting("smtp_contype", "html_email_handler")=="na") ? "" : elgg_get_plugin_setting("smtp_contype", "html_email_handler");
@@ -219,7 +219,7 @@ function html_email_handler_send_email(array $options = null) {
 				$mail->Debugoutput = 'error_log';
 				$mail->Subject = $options["subject"];
                                 $mail->Body = $options["html_message"]; //plaintext will be prepared automatically
-                                
+                                $mail->AltBody = $options["plaintext_message"];  
 				if(!empty($options["from"])){
 					$mail->From = $options["from"];
 				}else{
