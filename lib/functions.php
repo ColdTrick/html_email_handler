@@ -303,8 +303,8 @@ function html_email_handler_get_sendmail_options() {
  *
  * This function requires the option 'entity'
  *
- * @param ElggEntity $entity entity to use as the basis for the address
- * @param bool       $use_fallback  provides a fallback email if none defined
+ * @param ElggEntity $entity       entity to use as the basis for the address
+ * @param bool       $use_fallback provides a fallback email if none defined
  *
  * @return string the correctly formatted address
  */
