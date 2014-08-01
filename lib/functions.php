@@ -304,13 +304,14 @@ function html_email_handler_get_sendmail_options() {
  * This function requires the option 'entity'
  *
  * @param ElggEntity $entity entity to use as the basis for the address
+ * @param bool $use_fallback provides a fallback email if none defined
  *
  * @return string the correctly formatted address
  */
-function html_email_handler_make_rfc822_address(ElggEntity $entity) {
+function html_email_handler_make_rfc822_address(ElggEntity $entity, $use_fallback = true) {
 	// get the email address of the entity
 	$email = $entity->email;
-	if (empty($email)) {
+	if (empty($email) && $use_fallback) {
 		// no email found, fallback to site email
 		$site = elgg_get_site_entity();
 		
