@@ -57,9 +57,10 @@ echo elgg_view("input/text", array("name" => "params[smtp_user]", "value" => $pl
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_user:description") . "</div>";
 echo "</div>";
 
+$em_password =(trim($plugin->smtp_pass) !='') ? 'xxxxxxxx' : ''; /*returns place holder if password is set or leaves it blank for blank passwords */
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_pass");
-echo elgg_view("input/text", array("name" => "params[smtp_pass]", "value" => $plugin->smtp_pass));
+echo elgg_view("input/text", array("name" => "params[smtp_pass]", "value" => $em_password));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_pass:description") . "</div>";
 echo "</div>";
 

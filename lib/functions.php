@@ -212,7 +212,8 @@ function html_email_handler_send_email(array $options = null) {
                                 if($smtp_user != ""){
                                     $mail->SMTPAuth = true;
                                     $mail->Username = $smtp_user;
-                                    $mail->Password = trim(elgg_get_plugin_setting("smtp_pass", "html_email_handler"));
+                                    $em_password =(trim(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) !='') ? base64_decode(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) : '';
+                                    $mail->Password = $em_password;
                                     $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler"); //PLAIN,MD5-CRAM,LOGIN(default)
                                 };
 				$mail->WordWrap = 50;
