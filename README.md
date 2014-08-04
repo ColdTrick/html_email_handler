@@ -56,3 +56,14 @@ Note that $attachments is an array, so you can pass several files at once, each 
 Warning : don't use 'filepath' setting on a production site (not functionnal yet)
 
 
+SMTP Support :
+
+PHPMailer has been integrated to give SMTP server support.
+
+No other language files other than English are updated. So if anyone can translate the language files 
+it would be great.
+SMTP Passwords are base64 encoded but does not involve any encryption. Any suggestions?
+
+Special thanks to:
+ -Synchro for help during testing and
+ -Jerôme Bakker for help with integration to the plugin. 
