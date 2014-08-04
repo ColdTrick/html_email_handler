@@ -57,16 +57,16 @@ echo elgg_view("input/text", array("name" => "params[smtp_user]", "value" => $pl
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_user:description") . "</div>";
 echo "</div>";
 
-$em_password =(trim($plugin->smtp_pass) !='') ? 'xxxxxxxx' : ''; /*returns place holder if password is set or leaves it blank for blank passwords */
+$em_password = (trim($plugin->smtp_pass) != '') ? 'xxxxxxxx' : ''; /*returns place holder if password is set or leaves it blank for blank passwords */
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_pass");
-echo elgg_view("input/text", array("name" => "params[smtp_pass]", "value" => $em_password));
+echo elgg_view("input/text", array("name" => "params[smtp_pass]" , "value" => $em_password));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_pass:description") . "</div>";
 echo "</div>";
 
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_contype");
-echo elgg_view("input/dropdown", array("name" => "params[smtp_contype]", "options_values" =>$conn_options, "value" => $plugin->smtp_contype, "class" => "mls"));
+echo elgg_view("input/dropdown", array("name" => "params[smtp_contype]", "options_values" => $conn_options, "value" => $plugin->smtp_contype, "class" => "mls"));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_contype:description") . "</div>";
 echo "</div>";
 
