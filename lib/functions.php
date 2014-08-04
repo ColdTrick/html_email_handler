@@ -207,10 +207,12 @@ function html_email_handler_send_email(array $options = null) {
                                 $mail->Host = $smtp_server;
                                 $smtp_user = trim(elgg_get_plugin_setting("smtp_user", "html_email_handler"));
                                 $secure = (elgg_get_plugin_setting("smtp_contype", "html_email_handler") == "na") ? "" : elgg_get_plugin_setting("smtp_contype", "html_email_handler");
-                                if($secure != "") $mail->SMTPSecure = $secure; //Only if SSL or TLS is specified
+                                if ($secure != "") {
+                                    $mail->SMTPSecure = $secure; //Only if SSL or TLS is specified
+                                };
                                 $port = (trim(elgg_get_plugin_setting("smtp_port", "html_email_handler")) == "") ? 25 : intval(elgg_get_plugin_setting("smtp_port", "html_email_handler")); //default 25 or get the one that is set
                                 $mail->Port = $port;
-                                if($smtp_user != ""){
+                                if ($smtp_user != "") {
                                     $mail->SMTPAuth = true;
                                     $mail->Username = $smtp_user;
                                     $em_password = (trim(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) != '') ? base64_decode(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) : '';
@@ -222,23 +224,31 @@ function html_email_handler_send_email(array $options = null) {
 				$mail->Subject = $options["subject"];
                                 $mail->Body = $options["html_message"]; //plaintext will be prepared automatically
                                 $mail->AltBody = $options["plaintext_message"];  
-				if(!empty($options["from"])){
+				if (!empty($options["from"])) {
 					$mail->From = $options["from"];
-				}else{
+				} else {
 				      $mail->From = $site_from;
 				      $mail->FromName = $site_name;
 				};
-                                foreach($options["to"] as $to) $mail->addAddress($to);
-                                if(!empty($options["cc"])) foreach($options["cc"] as $cc) $mail->addCC ($cc);
-                                if(!empty($options["bcc"])) foreach($options["bcc"] as $bcc) $mail->addBCC($bcc);
-                                if(!empty($options["attachments"])) foreach($options["attachments"] as $attachment) $mail->addAttachment($attachment["filepath"]);
+                                foreach ($options["to"] as $to) {
+                                    $mail->addAddress($to);
+                                };
+                                if (!empty($options["cc"])) {
+                                    foreach($options["cc"] as $cc) $mail->addCC ($cc);
+                                };
+                                if (!empty($options["bcc"])) {
+                                    foreach($options["bcc"] as $bcc) $mail->addBCC($bcc);
+                                };
+                                if (!empty($options["attachments"])) {
+                                    foreach($options["attachments"] as $attachment) $mail->addAttachment($attachment["filepath"]);
+                                };
 				$mail->SMTPDebug = 3; //Connection+Data:Commands
                                 $result=$mail->send();
                                 if (!$result) {
                                     register_error("Mailer Error: " . $mail->ErrorInfo);
                                 } ;
                                 
-                        } else{
+                        } else {
                             $result = mail($to, $subject, $message, $headers, $sendmail_options);
 			};
 

@@ -30,9 +30,10 @@ foreach ($params as $k => $v) {
 	};
 system_message(elgg_echo('plugins:settings:save:ok', array($plugin_name)));
 forward(REFERER);
+
 /**
  * Takes care of encrypting the password if its not blank
- * @param strng $pstring The password string to be encoded
+ * @param string $pstring The password string to be encoded
  * @return string   The encrypted string
  */
 function setuppassword($pstring){

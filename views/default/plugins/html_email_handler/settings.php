@@ -72,6 +72,6 @@ echo "</div>";
 
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_authtype");
-echo elgg_view("input/dropdown", array("name" => "params[smtp_authtype]", "options_values" =>$auth_options, "value" => $plugin->smtp_authtype, "class" => "mls"));
+echo elgg_view("input/dropdown", array("name" => "params[smtp_authtype]", "options_values" => $auth_options, "value" => $plugin->smtp_authtype, "class" => "mls"));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_authtype:description") . "</div>";
 echo "</div>";
