@@ -196,7 +196,7 @@ function html_email_handler_send_email(array $options = null) {
 		$subject = "=?UTF-8?B?" . base64_encode($options["subject"]) . "?=";
                 $smtp_server = trim(elgg_get_plugin_setting("smtp_server", "html_email_handler"));
                 
-			if($smtp_server != ""){
+			if ($smtp_server != "") {
                         ////SMTP Mail specified
                                 elgg_load_library("phpmailer");
 				$mail = new PHPMailer;
