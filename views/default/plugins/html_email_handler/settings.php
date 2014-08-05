@@ -19,6 +19,15 @@ $auth_options = array(
 	"CRAM-MD5" => "CRAM-MD5 Digest"
 );
 
+$debug_options = array(
+        "0" => "None",
+	"1" => "Commands Only",
+	"2" => "Data And Commands",
+        "3" => "Data,Commands,Connection Status",
+        "4" => "Low Level Output"
+);
+
+
 $site_email = elgg_get_site_entity()->email;
 
 // present settings
@@ -57,7 +66,7 @@ echo elgg_view("input/text", array("name" => "params[smtp_user]", "value" => $pl
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_user:description") . "</div>";
 echo "</div>";
 
-$em_password = (trim($plugin->smtp_pass) != '') ? 'xxxxxxxx' : ''; /*returns place holder if password is set or leaves it blank for blank passwords */
+$em_password = (trim($plugin->smtp_pass) != '') ? '********' : ''; /*returns place holder if password is set or leaves it blank for blank passwords */
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_pass");
 echo elgg_view("input/text", array("name" => "params[smtp_pass]" , "value" => $em_password));
@@ -74,4 +83,10 @@ echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_authtype");
 echo elgg_view("input/dropdown", array("name" => "params[smtp_authtype]", "options_values" => $auth_options, "value" => $plugin->smtp_authtype, "class" => "mls"));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_authtype:description") . "</div>";
+echo "</div>";
+
+echo "<div>";
+echo elgg_echo("html_email_handler:settings:smtp_debug");
+echo elgg_view("input/dropdown", array("name" => "params[smtp_debug]", "options_values" => $debug_options, "value" => $plugin->smtp_debug, "class" => "mls"));
+echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_debug:description") . "</div>";
 echo "</div>";

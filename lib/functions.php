@@ -220,7 +220,8 @@ function html_email_handler_send_email(array $options = null) {
                                     $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler"); //PLAIN,MD5-CRAM,LOGIN(default)
                                 };
 				$mail->WordWrap = 50;
-				$mail->Debugoutput = 'error_log';
+				$mail->Debugoutput = 'error_log'; //System error log
+                                $mail->SMTPDebug = isset(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) ? intval(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) : 0; //default no debug info in error_log
 				$mail->Subject = $options["subject"];
                                 $mail->Body = $options["html_message"]; //plaintext will be prepared automatically
                                 $mail->AltBody = $options["plaintext_message"];  
@@ -242,7 +243,6 @@ function html_email_handler_send_email(array $options = null) {
                                 if (!empty($options["attachments"])) {
                                     foreach($options["attachments"] as $attachment) $mail->addAttachment($attachment["filepath"]);
                                 };
-				$mail->SMTPDebug = 3; //Connection+Data:Commands
                                 $result=$mail->send();
                                 if (!$result) {
                                     register_error("Mailer Error: " . $mail->ErrorInfo);

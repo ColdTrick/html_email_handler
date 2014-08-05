@@ -31,6 +31,9 @@
                 'html_email_handler:settings:smtp_contype' => "Secure connection ?",
                 'html_email_handler:settings:smtp_contype:description' => "Specify whether the SMTP connection is secure(SSL/TLS) or unencrypted",
 
+                'html_email_handler:settings:smtp_debug' => "Log SMTP Debug Info ?",
+                'html_email_handler:settings:smtp_debug:description' => "Should the smtp activities be logged in the error logs of the web server and the level of detail required.",
+
             // notification body
 		'html_email_handler:notification:footer:settings' => "Configure your notification settings %shere%s",
 	);
