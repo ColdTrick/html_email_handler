@@ -36,5 +36,7 @@ forward(REFERER);
  * @return string   The encrypted string
  */
 function setuppassword($pstring){
-    if (trim($pstring) != '' || $pstring != '********') return base64_encode($pstring);
+    if (trim($pstring) != '' || $pstring != '********') {
+        return base64_encode($pstring);
+    };
 }

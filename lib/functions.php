@@ -198,55 +198,55 @@ function html_email_handler_send_email(array $options = null) {
                 
                 if ($smtp_server != "") {
                 ////SMTP Mail specified
-                        elgg_load_library("phpmailer");
-                        $mail = new PHPMailer;
-                        $mail->isSMTP();                                      // Set mailer to use SMTP Server
-                        $mail->isHTML(true); //setting due to primary function of plugin (sending mail in html template)
-                        $mail->CharSet = 'UTF-8'; // since Elgg supports internationalization
-                        $mail->setLanguage(get_language()); //Set Elgg current language as plugin(PHPMailer) language
-                        $mail->Host = $smtp_server;
-                        $smtp_user = trim(elgg_get_plugin_setting("smtp_user", "html_email_handler"));
-                        $secure = (elgg_get_plugin_setting("smtp_contype", "html_email_handler") == "na") ? "" : elgg_get_plugin_setting("smtp_contype", "html_email_handler");
-                        if ($secure != "") {
-                            $mail->SMTPSecure = $secure; //Only if SSL or TLS is specified
-                        };
-                        $port = (trim(elgg_get_plugin_setting("smtp_port", "html_email_handler")) == "") ? 25 : intval(elgg_get_plugin_setting("smtp_port", "html_email_handler")); //default 25 or get the one that is set
-                        $mail->Port = $port;
-                        if ($smtp_user != "") {
-                            $mail->SMTPAuth = true;
-                            $mail->Username = $smtp_user;
-                            $em_password = (trim(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) != '') ? base64_decode(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) : '';
-                            $mail->Password = $em_password;
-                            $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler"); //PLAIN,MD5-CRAM,LOGIN(default)
-                        };
-                        $mail->WordWrap = 50;
-                        $mail->Debugoutput = 'error_log'; //System error log
-                        $mail->SMTPDebug = isset(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) ? intval(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) : 0; //default no debug info in error_log
-                        $mail->Subject = $options["subject"];
-                        $mail->Body = $options["html_message"]; //plaintext will be prepared automatically
-                        $mail->AltBody = $options["plaintext_message"];  
-                        if (!empty($options["from"])) {
-                                $mail->From = $options["from"];
-                        } else {
-                              $mail->From = $site_from;
-                              $mail->FromName = $site_name;
-                        };
-                        foreach ($options["to"] as $to) {
-                            $mail->addAddress($to);
-                        };
-                        if (!empty($options["cc"])) {
-                            foreach($options["cc"] as $cc) $mail->addCC ($cc);
-                        };
-                        if (!empty($options["bcc"])) {
-                            foreach($options["bcc"] as $bcc) $mail->addBCC($bcc);
-                        };
-                        if (!empty($options["attachments"])) {
-                            foreach($options["attachments"] as $attachment) $mail->addAttachment($attachment["filepath"]);
-                        };
-                        $result=$mail->send();
-                        if (!$result) {
-                            register_error("Mailer Error: " . $mail->ErrorInfo);
-                        } ;
+                    elgg_load_library("phpmailer");
+                    $mail = new PHPMailer;
+                    $mail->isSMTP();                                      // Set mailer to use SMTP Server
+                    $mail->isHTML(true); //setting due to primary function of plugin (sending mail in html template)
+                    $mail->CharSet = 'UTF-8'; // since Elgg supports internationalization
+                    $mail->setLanguage(get_language()); //Set Elgg current language as plugin(PHPMailer) language
+                    $mail->Host = $smtp_server;
+                    $smtp_user = trim(elgg_get_plugin_setting("smtp_user", "html_email_handler"));
+                    $secure = (elgg_get_plugin_setting("smtp_contype", "html_email_handler") == "na") ? "" : elgg_get_plugin_setting("smtp_contype", "html_email_handler");
+                    if ($secure != "") {
+                        $mail->SMTPSecure = $secure; //Only if SSL or TLS is specified
+                    };
+                    $port = (trim(elgg_get_plugin_setting("smtp_port", "html_email_handler")) == "") ? 25 : intval(elgg_get_plugin_setting("smtp_port", "html_email_handler")); //default 25 or get the one that is set
+                    $mail->Port = $port;
+                    if ($smtp_user != "") {
+                        $mail->SMTPAuth = true;
+                        $mail->Username = $smtp_user;
+                        $em_password = (trim(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) != '') ? base64_decode(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) : '';
+                        $mail->Password = $em_password;
+                        $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler"); //PLAIN,MD5-CRAM,LOGIN(default)
+                    };
+                    $mail->WordWrap = 50;
+                    $mail->Debugoutput = 'error_log'; //System error log
+                    $mail->SMTPDebug = isset(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) ? intval(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) : 0; //default no debug info in error_log
+                    $mail->Subject = $options["subject"];
+                    $mail->Body = $options["html_message"]; //plaintext will be prepared automatically
+                    $mail->AltBody = $options["plaintext_message"];  
+                    if (!empty($options["from"])) {
+                        $mail->From = $options["from"];
+                    } else {
+                        $mail->From = $site_from;
+                        $mail->FromName = $site_name;
+                    };
+                    foreach ($options["to"] as $to) {
+                        $mail->addAddress($to);
+                    };
+                    if (!empty($options["cc"])) {
+                        foreach($options["cc"] as $cc) $mail->addCC ($cc);
+                    };
+                    if (!empty($options["bcc"])) {
+                        foreach($options["bcc"] as $bcc) $mail->addBCC($bcc);
+                    };
+                    if (!empty($options["attachments"])) {
+                        foreach($options["attachments"] as $attachment) $mail->addAttachment($attachment["filepath"]);
+                    };
+                    $result=$mail->send();
+                    if (!$result) {
+                        register_error("Mailer Error: " . $mail->ErrorInfo);
+                    } ;
 
                 } else {
                     $result = mail($to, $subject, $message, $headers, $sendmail_options);
