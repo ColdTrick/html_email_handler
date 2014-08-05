@@ -85,8 +85,9 @@ echo elgg_view("input/dropdown", array("name" => "params[smtp_authtype]", "optio
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_authtype:description") . "</div>";
 echo "</div>";
 
+$em_debug = (trim($plugin->smtp_debug) != '') ? intval($plugin->smtp_debug) : 0; /* default is no debug info */
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:smtp_debug");
-echo elgg_view("input/dropdown", array("name" => "params[smtp_debug]", "options_values" => $debug_options, "value" => $plugin->smtp_debug, "class" => "mls"));
+echo elgg_view("input/dropdown", array("name" => "params[smtp_debug]", "options_values" => $debug_options, "value" => $em_debug, "class" => "mls"));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:smtp_debug:description") . "</div>";
 echo "</div>";
