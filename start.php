@@ -30,6 +30,14 @@ function html_email_handler_init() {
 	
 	// register html converter library
 	elgg_register_library("emogrifier", dirname(__FILE__) . "/vendors/emogrifier/emogrifier.php");
+        
+        // load PHPMailer library
+        elgg_register_library("phpmailer", dirname(__FILE__) . "/vendors/phpmail/PHPMailerAutoload.php");
+        
+        //Override settings save action
+        $action_path = elgg_get_plugins_path() . 'html_email_handler/actions';
+        elgg_register_action('html_email_handler/settings/save', "$action_path/save.php");
+        
 }
 
 /**

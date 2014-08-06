@@ -23,29 +23,29 @@
  */
 function html_email_handler_send_email(array $options = null) {
 	$result = false;
-	
+
 	$site = elgg_get_site_entity();
-	
+        $site_name = "";
 	// make site email
 	if (!empty($site->email)) {
 		$site_from = html_email_handler_make_rfc822_address($site);
 	} else {
 		// no site email, so make one up
 		$site_from = "noreply@" . get_site_domain($site->getGUID());
-		
+
 		if (!empty($site->name)) {
 			$site_name = $site->name;
 			if (strstr($site_name, ",")) {
 				$site_name = '"' . $site_name . '"'; // Protect the name with quotations if it contains a comma
 			}
-			
+
 			$site_name = "=?UTF-8?B?" . base64_encode($site_name) . "?="; // Encode the name. If may content nos ASCII chars.
 			$site_from = $site_name . " <" . $site_from . ">";
 		}
 	}
-	
+
 	$sendmail_options = html_email_handler_get_sendmail_options();
-	
+
 	// set default options
 	$default_options = array(
 		"to" => array(),
@@ -57,10 +57,10 @@ function html_email_handler_send_email(array $options = null) {
 		"bcc" => array(),
 		"date" => null,
 	);
-	
+
 	// merge options
 	$options = array_merge($default_options, $options);
-	
+
 	// check options
 	if (!empty($options["to"]) && !is_array($options["to"])) {
 		$options["to"] = array($options["to"]);
@@ -71,14 +71,14 @@ function html_email_handler_send_email(array $options = null) {
 	if (!empty($options["bcc"]) && !is_array($options["bcc"])) {
 		$options["bcc"] = array($options["bcc"]);
 	}
-	
+
 	// can we send a message
 	if (!empty($options["to"]) && (!empty($options["html_message"]) || !empty($options["plaintext_message"]))) {
 		// start preparing
 		// Facyla : better without spaces and special chars
 		//$boundary = uniqid($site->name);
 		$boundary = uniqid(friendly_title($site->name));
-		
+
 		// start building headers
 		$headers = "";
 		if (!empty($options["from"])) {
@@ -108,27 +108,27 @@ function html_email_handler_send_email(array $options = null) {
 		// Facyla : try to add attchments if set
 		// Allow to add single or multiple attachments
 		if (!empty($options["attachments"])) {
-			
+
 			$attachments = "";
-			
+
 			$attachment_counter = 0;
 			foreach ($options["attachments"] as $attachment) {
-				
+
 				// Alternatively fetch content based on a real file on server :
 				// use $attachment["filepath"] to load file content in $attachment["content"]
 				// @TODO : This has not been tested yet... careful !
 				if (empty($attachment["content"]) && !empty($attachment["filepath"])) {
 					$attachment["content"] = chunk_split(base64_encode(file_get_contents($attachment["filepath"])));
 				}
-			
+
 				// Cannot attach an empty file in any case..
 				if (empty($attachment["content"])) {
 					continue;
 				}
-			
+
 				// Count valid attachments
 				$attachment_counter++;
-			
+
 				// Use defaults for other less critical settings
 				if (empty($attachment["mimetype"])) {
 					$attachment["mimetype"] = "application/octet-stream";
@@ -136,7 +136,7 @@ function html_email_handler_send_email(array $options = null) {
 				if (empty($attachment["filename"])) {
 					$attachment["filename"] = "file_" . $attachment_counter;
 				}
-			
+
 				$attachments .= "Content-Type: {" . $attachment["mimetype"] . "};" . PHP_EOL . " name=\"" . $attachment["filename"] . "\"" . PHP_EOL;
 				$attachments .= "Content-Disposition: attachment;" . PHP_EOL . " filename=\"" . $attachment["filename"] . "\"" . PHP_EOL;
 				$attachments .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
@@ -144,7 +144,7 @@ function html_email_handler_send_email(array $options = null) {
 				$attachments .= "--mixed--" . $boundary . PHP_EOL;
 			}
 		}
-		
+
 		// Use attachments headers for real only if they are valid
 		if (!empty($attachments)) {
 			$headers .= "Content-Type: multipart/mixed; boundary=\"mixed--" . $boundary . "\"" . PHP_EOL . PHP_EOL;
@@ -191,12 +191,69 @@ function html_email_handler_send_email(array $options = null) {
 
 		// convert to to correct format
 		$to = implode(", ", $options["to"]);
-		
+
 		// encode subject to handle special chars
 		$subject = "=?UTF-8?B?" . base64_encode($options["subject"]) . "?=";
-			
-		$result = mail($to, $subject, $message, $headers, $sendmail_options);
-	}
+                $smtp_server = trim(elgg_get_plugin_setting("smtp_server", "html_email_handler"));
+                
+                if ($smtp_server != "") {
+                ////SMTP Mail specified
+                    elgg_load_library("phpmailer");
+                    $mail = new PHPMailer;
+                    $mail->isSMTP();                                      // Set mailer to use SMTP Server
+                    $mail->isHTML(true); //setting due to primary function of plugin (sending mail in html template)
+                    $mail->CharSet = 'UTF-8'; // since Elgg supports internationalization
+                    $mail->setLanguage(get_language()); //Set Elgg current language as plugin(PHPMailer) language
+                    $mail->Host = $smtp_server;
+                    $smtp_user = trim(elgg_get_plugin_setting("smtp_user", "html_email_handler"));
+                    $secure = (elgg_get_plugin_setting("smtp_contype", "html_email_handler") == "na") ? "" : elgg_get_plugin_setting("smtp_contype", "html_email_handler");
+                    if ($secure != "") {
+                        $mail->SMTPSecure = $secure; //Only if SSL or TLS is specified
+                    };
+                    $port = (trim(elgg_get_plugin_setting("smtp_port", "html_email_handler")) == "") ? 25 : intval(elgg_get_plugin_setting("smtp_port", "html_email_handler")); //default 25 or get the one that is set
+                    $mail->Port = $port;
+                    if ($smtp_user != "") {
+                        $mail->SMTPAuth = true;
+                        $mail->Username = $smtp_user;
+                        $em_password = (trim(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) != '') ? base64_decode(elgg_get_plugin_setting("smtp_pass", "html_email_handler")) : '';
+                        $mail->Password = $em_password;
+                        $mail->AuthType = elgg_get_plugin_setting("smtp_authtype", "html_email_handler"); //PLAIN,MD5-CRAM,LOGIN(default)
+                    };
+                    $mail->WordWrap = 50;
+                    $mail->Debugoutput = 'error_log'; //System error log
+                    $mail->SMTPDebug = (elgg_get_plugin_setting("smtp_debug", "html_email_handler") != "") ? intval(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) : 0; //default no debug info in error_log
+                    $mail->Subject = $options["subject"];
+                    $mail->Body = $options["html_message"]; //plaintext will be prepared automatically
+                    $mail->AltBody = $options["plaintext_message"];  
+                    if (!empty($options["from"])) {
+                        $mail->From = $options["from"];
+                    } else {
+                        $mail->From = $site_from;
+                        $mail->FromName = $site_name;
+                    };
+                    foreach ($options["to"] as $to) {
+                        $mail->addAddress($to);
+                    };
+                    if (!empty($options["cc"])) {
+                        foreach($options["cc"] as $cc) $mail->addCC ($cc);
+                    };
+                    if (!empty($options["bcc"])) {
+                        foreach($options["bcc"] as $bcc) $mail->addBCC($bcc);
+                    };
+                    if (!empty($options["attachments"])) {
+                        foreach($options["attachments"] as $attachment) $mail->addAttachment($attachment["filepath"]);
+                    };
+                    $result=$mail->send();
+                    if (!$result) {
+                        register_error("Mailer Error: " . $mail->ErrorInfo);
+                    } ;
+
+                } else {
+                    $result = mail($to, $subject, $message, $headers, $sendmail_options);
+                };
+
+            }
+            
 
 	return $result;
 }
@@ -252,7 +309,7 @@ function html_email_handler_css_inliner($html_text) {
  */
 function html_email_handler_make_html_body($subject = "", $body = "") {
 	global $CONFIG;
-	
+
 	// in some cases when pagesetup isn't done yet this can cause problems
 	// so manualy set is to done
 	$unset = false;
@@ -260,7 +317,7 @@ function html_email_handler_make_html_body($subject = "", $body = "") {
 		$unset = true;
 		$CONFIG->pagesetupdone = true;
 	}
-	
+
 	// generate HTML mail body
 	$result = elgg_view("html_email_handler/notification/body", array("title" => $subject, "message" => parse_urls($body)));
 
@@ -268,7 +325,7 @@ function html_email_handler_make_html_body($subject = "", $body = "") {
 	if ($unset) {
 		unset($CONFIG->pagesetupdone);
 	}
-	
+
 	if (defined("XML_DOCUMENT_NODE")) {
 		if ($transform = html_email_handler_css_inliner($result)) {
 			$result = $transform;
@@ -314,24 +371,24 @@ function html_email_handler_make_rfc822_address(ElggEntity $entity, $use_fallbac
 	if (empty($email) && $use_fallback) {
 		// no email found, fallback to site email
 		$site = elgg_get_site_entity();
-		
+
 		$email = $site->email;
 		if (empty($email)) {
 			// no site email, default to noreply
 			$email = "noreply@" . get_site_domain($site->getGUID());
 		}
 	}
-	
+
 	// build the RFC822 format
 	if (!empty($entity->name)) {
 		$name = $entity->name;
 		if (strstr($name, ",")) {
 			$name = '"' . $name . '"'; // Protect the name with quotations if it contains a comma
 		}
-		
+
 		$name = "=?UTF-8?B?" . base64_encode($name) . "?="; // Encode the name. If may content nos ASCII chars.
 		$email = $name . " <" . $email . ">";
 	}
-	
+
 	return $email;
 }

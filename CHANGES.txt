@@ -1,4 +1,7 @@
 = Version history =
+    (2014-08-04):
+- added: SMTP support added with other options via integration with PHPMailer.
+- todo: Needs to update language files other than English for smtp text.
 
 2.6 (2014-07-01):
 
