@@ -1,10 +1,12 @@
 <?php
 /**
  * This file was created by Translation Editor v2.0
- * On 2014-07-17 09:23
+ * On 2014-08-06 16:52
  */
 
 $language = array (
+  'html_email_handler:settings:limit_subject' => 'Beperk de maximale lengte van het e-mail onderwerp',
+  'html_email_handler:settings:limit_subject:subtext' => 'Schakel deze optie in indien gebruikers melden dat ze onleesbare onderwerpen in hun e-mail client zien (voornamelijk Outlook). Dit kan er potentieel voor zorgen dat er informatie verloren gaat in het onderwerp.',
   'html_email_handler' => 'HTML E-mail handler',
   'html_email_handler:theme_preview:menu' => 'HTML notificatie',
   'html_email_handler:settings:notifications:description' => 'Als je deze optie inschakelt zullen alle notificaties naar de gebruikers worden verzonden in HTML formaat.',

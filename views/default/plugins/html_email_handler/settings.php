@@ -25,3 +25,9 @@ echo elgg_echo("html_email_handler:settings:sendmail_options");
 echo elgg_view("input/text", array("name" => "params[sendmail_options]", "value" => $plugin->sendmail_options));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:sendmail_options:description", array($site_email)) . "</div>";
 echo "</div>";
+
+echo "<div>";
+echo elgg_echo("html_email_handler:settings:limit_subject");
+echo elgg_view("input/select", array("name" => "params[limit_subject]", "options_values" => $noyes_options, "value" => $plugin->limit_subject, "class" => "mls"));
+echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:limit_subject:subtext") . "</div>";
+echo "</div>";

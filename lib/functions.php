@@ -22,6 +22,7 @@
  * @return bool
  */
 function html_email_handler_send_email(array $options = null) {
+	static $limit_subject;
 	$result = false;
 	
 	$site = elgg_get_site_entity();
@@ -45,6 +46,14 @@ function html_email_handler_send_email(array $options = null) {
 	}
 	
 	$sendmail_options = html_email_handler_get_sendmail_options();
+	
+	if (!isset($limit_subject)) {
+		$limit_subject = false;
+		
+		if (elgg_get_plugin_setting("limit_subject", "html_email_handler") == "yes") {
+			$limit_subject = true;
+		}
+	}
 	
 	// set default options
 	$default_options = array(
@@ -193,7 +202,11 @@ function html_email_handler_send_email(array $options = null) {
 		$to = implode(", ", $options["to"]);
 		
 		// encode subject to handle special chars
-		$subject = "=?UTF-8?B?" . base64_encode($options["subject"]) . "?=";
+		$subject = $options["subject"];
+		if ($limit_subject) {
+			$subject = elgg_get_excerpt($subject, 175);
+		}
+		$subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
 		
 		$result = mail($to, $subject, $message, $headers, $sendmail_options);
 	}
