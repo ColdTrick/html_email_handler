@@ -221,7 +221,7 @@ function html_email_handler_send_email(array $options = null) {
                     };
                     $mail->WordWrap = 50;
                     $mail->Debugoutput = 'error_log'; //System error log
-                    $mail->SMTPDebug = isset(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) ? intval(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) : 0; //default no debug info in error_log
+                    $mail->SMTPDebug = (elgg_get_plugin_setting("smtp_debug", "html_email_handler") != "") ? intval(elgg_get_plugin_setting("smtp_debug", "html_email_handler")) : 0; //default no debug info in error_log
                     $mail->Subject = $options["subject"];
                     $mail->Body = $options["html_message"]; //plaintext will be prepared automatically
                     $mail->AltBody = $options["plaintext_message"];  
