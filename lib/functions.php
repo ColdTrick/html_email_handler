@@ -115,10 +115,9 @@ function html_email_handler_send_email(array $options = null) {
 		$headers .= "MIME-Version: 1.0" . PHP_EOL;
 		
 		// Facyla : try to add attchments if set
+		$attachments = "";
 		// Allow to add single or multiple attachments
 		if (!empty($options["attachments"])) {
-			
-			$attachments = "";
 			
 			$attachment_counter = 0;
 			foreach ($options["attachments"] as $attachment) {
@@ -165,21 +164,33 @@ function html_email_handler_send_email(array $options = null) {
 		$message = "";
 		
 		// TEXT part of message
-		if (!empty($options["plaintext_message"])) {
+		$plaintext_message = elgg_extract("plaintext_message", $options);
+		if (!empty($plaintext_message)) {
+			// normalize URL's in the text
+			$plaintext_message = html_email_handler_normalize_urls($plaintext_message);
+			
+			// add boundry / content type
 			$message .= "--" . $boundary . PHP_EOL;
 			$message .= "Content-Type: text/plain; charset=\"utf-8\"" . PHP_EOL;
 			$message .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
 
-			$message .= chunk_split(base64_encode($options["plaintext_message"])) . PHP_EOL . PHP_EOL;
+			// add content
+			$message .= chunk_split(base64_encode($plaintext_message)) . PHP_EOL . PHP_EOL;
 		}
 		
 		// HTML part of message
-		if (!empty($options["html_message"])) {
+		$html_message = elgg_extract("html_message", $options);
+		if (!empty($html_message)) {
+			// normalize URL's in the text
+			$html_message = html_email_handler_normalize_urls($html_message);
+			
+			// add boundry / content type
 			$message .= "--" . $boundary . PHP_EOL;
 			$message .= "Content-Type: text/html; charset=\"utf-8\"" . PHP_EOL;
 			$message .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
-
-			$message .= chunk_split(base64_encode($options["html_message"])) . PHP_EOL;
+			
+			// add content
+			$message .= chunk_split(base64_encode($html_message)) . PHP_EOL;
 		}
 		
 		// Final boundry
@@ -190,10 +201,12 @@ function html_email_handler_send_email(array $options = null) {
 			// Build strings that will be added before TEXT/HTML message
 			$before_message = "--mixed--" . $boundary . PHP_EOL;
 			$before_message .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+			
 			// Build strings that will be added after TEXT/HTML message
 			$after_message = PHP_EOL;
 			$after_message .= "--mixed--" . $boundary . PHP_EOL;
 			$after_message .= $attachments;
+			
 			// Wrap TEXT/HTML message into mixed message content
 			$message = $before_message . PHP_EOL . $message . PHP_EOL . $after_message;
 		}
@@ -364,4 +377,45 @@ function html_email_handler_make_rfc822_address(ElggEntity $entity, $use_fallbac
 	}
 	
 	return $email;
+}
+
+/**
+ * Normalize all URL's in the text to full URL's
+ *
+ * @param string $text the text to check for URL's
+ *
+ * @return string
+ */
+function html_email_handler_normalize_urls($text) {
+	static $pattern = '/\s(?:href|src)=([\'"]\S+[\'"])/i';
+	
+	if (empty($text)) {
+		return $text;
+	}
+	
+	// find all matches
+	$matches = array();
+	preg_match_all($pattern, $text, $matches);
+	
+	if (empty($matches) || !isset($matches[1])) {
+		return $text;
+	}
+	
+	// go through all the matches
+	$urls = $matches[1];
+	$urls = array_unique($urls);
+	
+	foreach ($urls as $url) {
+		// remove wrapping quotes from the url
+		$real_url = substr($url, 1, -1);
+		// normalize url
+		$new_url = elgg_normalize_url($real_url);
+		// make the correct replacement string
+		$replacement = str_replace($real_url, $new_url, $url);
+	
+		// replace the url in the content
+		$text = str_replace($url, $replacement, $text);
+	}
+	
+	return $text;
 }
