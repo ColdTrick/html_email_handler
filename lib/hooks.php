@@ -88,9 +88,9 @@ function html_email_handler_send_email_notifications_hook($hook, $type, $return,
 			}
 			
 			$name = "=?UTF-8?B?" . base64_encode($name) . "?="; // Encode the name. If may content nos ASCII chars.
-			$from = $name . " <noreply@" . get_site_domain($site->getGUID()) . ">";
+			$from = $name . " <noreply@" . $site->getDomain() . ">";
 		} else {
-			$from = "noreply@" . get_site_domain($site->getGUID());
+			$from = "noreply@" . $site->getDomain();
 		}
 	}
 	

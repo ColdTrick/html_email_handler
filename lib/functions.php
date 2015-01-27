@@ -32,7 +32,7 @@ function html_email_handler_send_email(array $options = null) {
 		$site_from = html_email_handler_make_rfc822_address($site);
 	} else {
 		// no site email, so make one up
-		$site_from = "noreply@" . get_site_domain($site->getGUID());
+		$site_from = "noreply@" . $site->getDomain();
 		
 		if (!empty($site->name)) {
 			$site_name = $site->name;
@@ -361,7 +361,7 @@ function html_email_handler_make_rfc822_address(ElggEntity $entity, $use_fallbac
 		$email = $site->email;
 		if (empty($email)) {
 			// no site email, default to noreply
-			$email = "noreply@" . get_site_domain($site->getGUID());
+			$email = "noreply@" . $site->getDomain();
 		}
 	}
 	
