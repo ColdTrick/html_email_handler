@@ -23,7 +23,6 @@
  */
 function html_email_handler_send_email(array $options = null) {
 	static $limit_subject;
-	$result = false;
 	
 	$site = elgg_get_site_entity();
 	
@@ -82,150 +81,178 @@ function html_email_handler_send_email(array $options = null) {
 	}
 	
 	// can we send a message
-	if (!empty($options["to"]) && (!empty($options["html_message"]) || !empty($options["plaintext_message"]))) {
-		// start preparing
-		// Facyla : better without spaces and special chars
-		//$boundary = uniqid($site->name);
-		$boundary = uniqid(elgg_get_friendly_title($site->name));
-		
-		// start building headers
-		$headers = "";
-		if (!empty($options["from"])) {
-			$headers .= "From: " . $options["from"] . PHP_EOL;
-		} else {
-			$headers .= "From: " . $site_from . PHP_EOL;
-		}
-		
-		// check CC mail
-		if (!empty($options["cc"])) {
-			$headers .= "Cc: " . implode(", ", $options["cc"]) . PHP_EOL;
-		}
-		
-		// check BCC mail
-		if (!empty($options["bcc"])) {
-			$headers .= "Bcc: " . implode(", ", $options["bcc"]) . PHP_EOL;
-		}
-		
-		// add a date header
-		if (!empty($options["date"])) {
-			$headers .= "Date: " . date("r", $options["date"]) . PHP_EOL;
-		}
-		
-		$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
-		$headers .= "MIME-Version: 1.0" . PHP_EOL;
-		
-		// Facyla : try to add attchments if set
-		$attachments = "";
-		// Allow to add single or multiple attachments
-		if (!empty($options["attachments"])) {
-			
-			$attachment_counter = 0;
-			foreach ($options["attachments"] as $attachment) {
-				
-				// Alternatively fetch content based on a real file on server :
-				// use $attachment["filepath"] to load file content in $attachment["content"]
-				// @TODO : This has not been tested yet... careful !
-				if (empty($attachment["content"]) && !empty($attachment["filepath"])) {
-					$attachment["content"] = chunk_split(base64_encode(file_get_contents($attachment["filepath"])));
-				}
-				
-				// Cannot attach an empty file in any case..
-				if (empty($attachment["content"])) {
-					continue;
-				}
-				
-				// Count valid attachments
-				$attachment_counter++;
-				
-				// Use defaults for other less critical settings
-				if (empty($attachment["mimetype"])) {
-					$attachment["mimetype"] = "application/octet-stream";
-				}
-				if (empty($attachment["filename"])) {
-					$attachment["filename"] = "file_" . $attachment_counter;
-				}
-				
-				$attachments .= "Content-Type: {" . $attachment["mimetype"] . "};" . PHP_EOL . " name=\"" . $attachment["filename"] . "\"" . PHP_EOL;
-				$attachments .= "Content-Disposition: attachment;" . PHP_EOL . " filename=\"" . $attachment["filename"] . "\"" . PHP_EOL;
-				$attachments .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
-				$attachments .= $attachment["content"] . PHP_EOL . PHP_EOL;
-				$attachments .= "--mixed--" . $boundary . PHP_EOL;
-			}
-		}
-		
-		// Use attachments headers for real only if they are valid
-		if (!empty($attachments)) {
-			$headers .= "Content-Type: multipart/mixed; boundary=\"mixed--" . $boundary . "\"" . PHP_EOL . PHP_EOL;
-		} else {
-			$headers .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
-		}
-		
-		// start building the message
-		$message = "";
-		
-		// TEXT part of message
-		$plaintext_message = elgg_extract("plaintext_message", $options);
-		if (!empty($plaintext_message)) {
-			// normalize URL's in the text
-			$plaintext_message = html_email_handler_normalize_urls($plaintext_message);
-			
-			// add boundry / content type
-			$message .= "--" . $boundary . PHP_EOL;
-			$message .= "Content-Type: text/plain; charset=\"utf-8\"" . PHP_EOL;
-			$message .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
-
-			// add content
-			$message .= chunk_split(base64_encode($plaintext_message)) . PHP_EOL . PHP_EOL;
-		}
-		
-		// HTML part of message
-		$html_message = elgg_extract("html_message", $options);
-		if (!empty($html_message)) {
-			// normalize URL's in the text
-			$html_message = html_email_handler_normalize_urls($html_message);
-			$html_message = html_email_handler_embed_images($html_message);
-			
-			// add boundry / content type
-			$message .= "--" . $boundary . PHP_EOL;
-			$message .= "Content-Type: text/html; charset=\"utf-8\"" . PHP_EOL;
-			$message .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
-			
-			// add content
-			$message .= chunk_split(base64_encode($html_message)) . PHP_EOL;
-		}
-		
-		// Final boundry
-		$message .= "--" . $boundary . "--" . PHP_EOL;
-		
-		// Facyla : FILE part of message
-		if (!empty($attachments)) {
-			// Build strings that will be added before TEXT/HTML message
-			$before_message = "--mixed--" . $boundary . PHP_EOL;
-			$before_message .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
-			
-			// Build strings that will be added after TEXT/HTML message
-			$after_message = PHP_EOL;
-			$after_message .= "--mixed--" . $boundary . PHP_EOL;
-			$after_message .= $attachments;
-			
-			// Wrap TEXT/HTML message into mixed message content
-			$message = $before_message . PHP_EOL . $message . PHP_EOL . $after_message;
-		}
-		
-		// convert to to correct format
-		$to = implode(", ", $options["to"]);
-		
-		// encode subject to handle special chars
-		$subject = $options["subject"];
-		if ($limit_subject) {
-			$subject = elgg_get_excerpt($subject, 175);
-		}
-		$subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
-		
-		$result = mail($to, $subject, $message, $headers, $sendmail_options);
+	if (empty($options["to"]) || (empty($options["html_message"]) && empty($options["plaintext_message"]))) {
+		return false;
 	}
 	
-	return $result;
+	// start preparing
+	// Facyla : better without spaces and special chars
+	//$boundary = uniqid($site->name);
+	$boundary = uniqid(elgg_get_friendly_title($site->name));
+	
+	// start building headers
+	$headers = "";
+	if (!empty($options["from"])) {
+		$headers .= "From: " . $options["from"] . PHP_EOL;
+	} else {
+		$headers .= "From: " . $site_from . PHP_EOL;
+	}
+	
+	// check CC mail
+	if (!empty($options["cc"])) {
+		$headers .= "Cc: " . implode(", ", $options["cc"]) . PHP_EOL;
+	}
+	
+	// check BCC mail
+	if (!empty($options["bcc"])) {
+		$headers .= "Bcc: " . implode(", ", $options["bcc"]) . PHP_EOL;
+	}
+	
+	// add a date header
+	if (!empty($options["date"])) {
+		$headers .= "Date: " . date("r", $options["date"]) . PHP_EOL;
+	}
+	
+	$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
+	$headers .= "MIME-Version: 1.0" . PHP_EOL;
+	
+	// Facyla : try to add attchments if set
+	$attachments = "";
+	// Allow to add single or multiple attachments
+	if (!empty($options["attachments"])) {
+		
+		$attachment_counter = 0;
+		foreach ($options["attachments"] as $attachment) {
+			
+			// Alternatively fetch content based on a real file on server :
+			// use $attachment["filepath"] to load file content in $attachment["content"]
+			// @TODO : This has not been tested yet... careful !
+			if (empty($attachment["content"]) && !empty($attachment["filepath"])) {
+				$attachment["content"] = chunk_split(base64_encode(file_get_contents($attachment["filepath"])));
+			}
+			
+			// Cannot attach an empty file in any case..
+			if (empty($attachment["content"])) {
+				continue;
+			}
+			
+			// Count valid attachments
+			$attachment_counter++;
+			
+			// Use defaults for other less critical settings
+			if (empty($attachment["mimetype"])) {
+				$attachment["mimetype"] = "application/octet-stream";
+			}
+			if (empty($attachment["filename"])) {
+				$attachment["filename"] = "file_" . $attachment_counter;
+			}
+			
+			$attachments .= "Content-Type: {" . $attachment["mimetype"] . "};" . PHP_EOL . " name=\"" . $attachment["filename"] . "\"" . PHP_EOL;
+			$attachments .= "Content-Disposition: attachment;" . PHP_EOL . " filename=\"" . $attachment["filename"] . "\"" . PHP_EOL;
+			$attachments .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
+			$attachments .= $attachment["content"] . PHP_EOL . PHP_EOL;
+			$attachments .= "--mixed--" . $boundary . PHP_EOL;
+		}
+	}
+	
+	// Use attachments headers for real only if they are valid
+	if (!empty($attachments)) {
+		$headers .= "Content-Type: multipart/mixed; boundary=\"mixed--" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+	} else {
+		$headers .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+	}
+	
+	// start building the message
+	$message = "";
+	
+	// TEXT part of message
+	$plaintext_message = elgg_extract("plaintext_message", $options);
+	if (!empty($plaintext_message)) {
+		// normalize URL's in the text
+		$plaintext_message = html_email_handler_normalize_urls($plaintext_message);
+		
+		// add boundry / content type
+		$message .= "--" . $boundary . PHP_EOL;
+		$message .= "Content-Type: text/plain; charset=\"utf-8\"" . PHP_EOL;
+		$message .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
+
+		// add content
+		$message .= chunk_split(base64_encode($plaintext_message)) . PHP_EOL . PHP_EOL;
+	}
+	
+	// HTML part of message
+	$html_message = elgg_extract("html_message", $options);
+	if (!empty($html_message)) {
+		$html_boundary = $boundary;
+		
+		// normalize URL's in the text
+		$html_message = html_email_handler_normalize_urls($html_message);
+		$html_message = html_email_handler_base64_encode_images($html_message);
+		
+		$image_attachments = html_email_handler_attach_images($html_message);
+		if (is_array($image_attachments)) {
+			$html_boundary .= "-alt";
+			$html_message = elgg_extract("text", $image_attachments);
+			
+			$message .= "--" . $boundary . PHP_EOL;
+			$message .= "Content-Type: multipart/related; boundary=\"$html_boundary\"" . PHP_EOL . PHP_EOL;
+		}
+		
+		// add boundry / content type
+		$message .= "--" . $html_boundary . PHP_EOL;
+		$message .= "Content-Type: text/html; charset=\"utf-8\"" . PHP_EOL;
+		$message .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
+		
+		// add content
+		$message .= chunk_split(base64_encode($html_message)) . PHP_EOL;
+		
+		if (is_array($image_attachments)) {
+			$images = elgg_extract("images", $image_attachments);
+			
+			foreach ($images as $image_info) {
+				$message .= "--" . $html_boundary . PHP_EOL;
+				$message .= "Content-Type: " . elgg_extract("content_type", $image_info) . "; charset=\"utf-8\"" . PHP_EOL;
+				$message .= "Content-Disposition: inline; filename=\"" . elgg_extract("name", $image_info) . "\"" . PHP_EOL;
+				$message .= "Content-ID: <" . elgg_extract("uid", $image_info) . ">" . PHP_EOL;
+				$message .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
+				
+				// add content
+				$message .= chunk_split(elgg_extract("data", $image_info)) . PHP_EOL;
+			}
+			
+			$message .= "--" . $html_boundary . "--" . PHP_EOL;
+		}
+	}
+	
+	// Final boundry
+	$message .= "--" . $boundary . "--" . PHP_EOL;
+	
+	// Facyla : FILE part of message
+	if (!empty($attachments)) {
+		// Build strings that will be added before TEXT/HTML message
+		$before_message = "--mixed--" . $boundary . PHP_EOL;
+		$before_message .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+		
+		// Build strings that will be added after TEXT/HTML message
+		$after_message = PHP_EOL;
+		$after_message .= "--mixed--" . $boundary . PHP_EOL;
+		$after_message .= $attachments;
+		
+		// Wrap TEXT/HTML message into mixed message content
+		$message = $before_message . PHP_EOL . $message . PHP_EOL . $after_message;
+	}
+	
+	// convert to to correct format
+	$to = implode(", ", $options["to"]);
+	
+	// encode subject to handle special chars
+	$subject = $options["subject"];
+	if ($limit_subject) {
+		$subject = elgg_get_excerpt($subject, 175);
+	}
+	$subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
+	
+	return mail($to, $subject, $message, $headers, $sendmail_options);
 }
 
 /**
@@ -430,14 +457,17 @@ function html_email_handler_normalize_urls($text) {
  *
  * @return string
  */
-function html_email_handler_embed_images($text) {
+function html_email_handler_base64_encode_images($text) {
 	static $plugin_setting;
-	static $pattern = '/\ssrc=([\'"]\S+[\'"])/i';
+	
+	if (empty($text)) {
+		return $text;
+	}
 	
 	if (!isset($plugin_setting)) {
 		$plugin_setting = false;
 		
-		if (elgg_get_plugin_setting("embed_images", "html_email_handler", "no") === "yes") {
+		if (elgg_get_plugin_setting("embed_images", "html_email_handler", "no") === "base64") {
 			$plugin_setting = true;
 		}
 	}
@@ -446,19 +476,12 @@ function html_email_handler_embed_images($text) {
 		return $text;
 	}
 	
-	// find all matches
-	$matches = array();
-	preg_match_all($pattern, $text, $matches);
-	
-	if (empty($matches) || !isset($matches[1])) {
+	$image_urls = html_email_handler_find_images($text);
+	if (empty($image_urls)) {
 		return $text;
 	}
 	
-	// go through all the matches
-	$urls = $matches[1];
-	$urls = array_unique($urls);
-	
-	foreach ($urls as $url) {
+	foreach ($image_urls as $url) {
 		// remove wrapping quotes from the url
 		$image_url = substr($url, 1, -1);
 		
@@ -581,4 +604,104 @@ function html_email_handler_get_image($image_url) {
 	
 	// return result
 	return $base64_result;
+}
+
+/**
+ * Find img src's in text
+ *
+ * @param string $text the text to search though
+ *
+ * @return false|array
+ */
+function html_email_handler_find_images($text) {
+	static $pattern = '/\ssrc=([\'"]\S+[\'"])/i';
+	
+	if (empty($text)) {
+		return false;
+	}
+	
+	// find all matches
+	$matches = array();
+	preg_match_all($pattern, $text, $matches);
+	
+	if (empty($matches) || !isset($matches[1])) {
+		return false;
+	}
+	
+	// return all the found image urls
+	return array_unique($matches[1]);
+}
+
+/**
+ * Get information needed for attaching the images to the e-mail
+ *
+ * @param string $text the html text to search images in
+ *
+ * @return string|array
+ */
+function html_email_handler_attach_images($text) {
+	static $plugin_setting;
+	
+	if (empty($text)) {
+		return $text;
+	}
+	
+	// get plugin setting for replacement
+	if (!isset($plugin_setting)) {
+		$plugin_setting = false;
+	
+		if (elgg_get_plugin_setting("embed_images", "html_email_handler", "no") === "attach") {
+			$plugin_setting = true;
+		}
+	}
+	
+	// check plugin setting
+	if (!$plugin_setting) {
+		return $text;
+	}
+	
+	// get images
+	$image_urls = html_email_handler_find_images($text);
+	if (empty($image_urls)) {
+		return $text;
+	}
+	
+	$result = array(
+		"images" => array()
+	);
+	
+	foreach ($image_urls as $url) {
+		// remove wrapping quotes from the url
+		$image_url = substr($url, 1, -1);
+		
+		// get the image contents
+		$contents = html_email_handler_get_image($image_url);
+		if (empty($contents)) {
+			continue;
+		}
+		
+		// make different parts of the result
+		list($content_type, $data) = explode(";charset=UTF-8;base64,", $contents);
+		
+		// Unique ID
+		$uid = uniqid();
+		
+		$result["images"][] = array(
+			"uid" => $uid,
+			"content_type" => $content_type,
+			"data" => $data,
+			"name" => basename($image_url)
+		);
+		
+		// replace url in the text with uid
+		$replacement = str_replace($image_url, "cid:" . $uid, $url);
+		
+		$text = str_replace($url, $replacement, $text);
+	}
+	
+	// return new text
+	$result["text"] = $text;
+	
+	// return result
+	return $result;
 }

@@ -7,6 +7,12 @@ $noyes_options = array(
 	"yes" => elgg_echo("option:yes")
 );
 
+$embed_options = array(
+	"no" => elgg_echo("option:no"),
+	"base64" => elgg_echo("html_email_handler:settings:embed_images:base64"),
+	"attach" => elgg_echo("html_email_handler:settings:embed_images:attach"),
+);
+
 $site_email = elgg_get_site_entity()->email;
 
 // present settings
@@ -34,7 +40,7 @@ echo "</div>";
 
 echo "<div>";
 echo elgg_echo("html_email_handler:settings:embed_images");
-echo elgg_view("input/select", array("name" => "params[embed_images]", "options_values" => $noyes_options, "value" => $plugin->embed_images, "class" => "mls"));
+echo elgg_view("input/select", array("name" => "params[embed_images]", "options_values" => $embed_options, "value" => $plugin->embed_images, "class" => "mls"));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:embed_images:subtext") . "</div>";
 echo "</div>";
 

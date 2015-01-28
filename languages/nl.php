@@ -1,10 +1,12 @@
 <?php
 /**
  * This file was created by Translation Editor v2.0
- * On 2015-01-28 13:13
+ * On 2015-01-28 15:50
  */
 
 return array (
+  'html_email_handler:settings:embed_images:base64' => 'Base64 encoded',
+  'html_email_handler:settings:embed_images:attach' => 'Bijlagen',
   'html_email_handler:settings:embed_images' => 'Afbeeldingen embedden in de e-mail',
   'html_email_handler:settings:embed_images:subtext' => 'Als dit is ingeschakeld worden alle afbeeldingen base64 encoded opgenomen in de e-mails.',
   'html_email_handler:settings:proxy_host' => 'Poxy host om afbeeldingen te embedden',
