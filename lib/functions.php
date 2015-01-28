@@ -183,6 +183,7 @@ function html_email_handler_send_email(array $options = null) {
 		if (!empty($html_message)) {
 			// normalize URL's in the text
 			$html_message = html_email_handler_normalize_urls($html_message);
+			$html_message = html_email_handler_embed_images($html_message);
 			
 			// add boundry / content type
 			$message .= "--" . $boundary . PHP_EOL;
@@ -418,4 +419,166 @@ function html_email_handler_normalize_urls($text) {
 	}
 	
 	return $text;
+}
+
+/**
+ * Convert images to inline images
+ *
+ * This can be enabled with a plugin setting (default: off)
+ *
+ * @param string $text the text of the message to embed the images from
+ *
+ * @return string
+ */
+function html_email_handler_embed_images($text) {
+	static $plugin_setting;
+	static $pattern = '/\ssrc=([\'"]\S+[\'"])/i';
+	
+	if (!isset($plugin_setting)) {
+		$plugin_setting = false;
+		
+		if (elgg_get_plugin_setting("embed_images", "html_email_handler", "no") === "yes") {
+			$plugin_setting = true;
+		}
+	}
+	
+	if (!$plugin_setting) {
+		return $text;
+	}
+	
+	// find all matches
+	$matches = array();
+	preg_match_all($pattern, $text, $matches);
+	
+	if (empty($matches) || !isset($matches[1])) {
+		return $text;
+	}
+	
+	// go through all the matches
+	$urls = $matches[1];
+	$urls = array_unique($urls);
+	
+	foreach ($urls as $url) {
+		// remove wrapping quotes from the url
+		$image_url = substr($url, 1, -1);
+		
+		// get the image contents
+		$contents = html_email_handler_get_image($image_url);
+		if (empty($contents)) {
+			continue;
+		}
+		
+		// build inline image
+		$replacement = str_replace($image_url, "data:" . $contents, $url);
+		
+		// replace in text
+		$text = str_replace($url, $replacement, $text);
+	}
+	
+	return $text;
+}
+
+/**
+ * Get the contents of an image url for embedding
+ *
+ * @param string $image_url the URL of the image
+ *
+ * @return false|string
+ */
+function html_email_handler_get_image($image_url) {
+	static $proxy_host;
+	static $proxy_port;
+	static $session_cookie;
+	static $cache_dir;
+	
+	if (empty($image_url)) {
+		return false;
+	}
+	$image_url = elgg_normalize_url($image_url);
+	
+	// check cache
+	if (!isset($cache_dir)) {
+		$cache_dir = elgg_get_config("dataroot") . "html_email_handler/image_cache/";
+		if (!is_dir($cache_dir)) {
+			mkdir($cache_dir, "0755", true);
+		}
+	}
+	
+	$cache_file = md5($image_url);
+	if (file_exists($cache_dir . $cache_file)) {
+		return file_get_contents($cache_dir . $cache_file);
+	}
+	
+	// build cURL options
+	$ch = curl_init($image_url);
+	
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+	
+	// set proxy settings
+	if (!isset($proxy_host)) {
+		$proxy_host = false;
+		
+		$setting = elgg_get_plugin_setting("proxy_host", "html_email_handler");
+		if (!empty($setting)) {
+			$proxy_host = $setting;
+		}
+	}
+	
+	if ($proxy_host) {
+		curl_setopt($ch, CURLOPT_PROXY, $proxy_host);
+	}
+	
+	if (!isset($proxy_port)) {
+		$proxy_port = false;
+		
+		$setting = (int) elgg_get_plugin_setting("proxy_port", "html_email_handler");
+		if ($setting > 0) {
+			$proxy_port = $setting;
+		}
+	}
+	
+	if ($proxy_port) {
+		curl_setopt($ch, CURLOPT_PROXYPORT, $proxy_port);
+	}
+	
+	// check if local url, so we can send Elgg cookies
+	if (strpos($image_url, elgg_get_site_url()) !== false) {
+		if (!isset($session_cookie)) {
+			$session_cookie = false;
+			
+			$cookie_settings = elgg_get_config("cookie");
+			if (!empty($cookie_settings)) {
+				$cookie_name = elgg_extract("name", $cookie_settings["session"]);
+				
+				$session_cookie = $cookie_name . "=" . session_id();
+			}
+		}
+		
+		if ($session_cookie) {
+			curl_setopt($ch, CURLOPT_COOKIE, $session_cookie);
+		}
+	}
+	
+	// get the image
+	$contents = curl_exec($ch);
+	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+	$http_code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	
+	curl_close($ch);
+	
+	if (empty($contents) || ($http_code !== 200)) {
+		return false;
+	}
+	
+	// build a valid uri
+	// https://en.wikipedia.org/wiki/Data_URI_scheme
+	$base64_result = $content_type . ";charset=UTF-8;base64," . base64_encode($contents);
+	
+	// write to cache
+	file_put_contents($cache_dir . $cache_file, $base64_result);
+	
+	// return result
+	return $base64_result;
 }

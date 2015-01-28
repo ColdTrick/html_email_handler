@@ -31,3 +31,19 @@ echo elgg_echo("html_email_handler:settings:limit_subject");
 echo elgg_view("input/select", array("name" => "params[limit_subject]", "options_values" => $noyes_options, "value" => $plugin->limit_subject, "class" => "mls"));
 echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:limit_subject:subtext") . "</div>";
 echo "</div>";
+
+echo "<div>";
+echo elgg_echo("html_email_handler:settings:embed_images");
+echo elgg_view("input/select", array("name" => "params[embed_images]", "options_values" => $noyes_options, "value" => $plugin->embed_images, "class" => "mls"));
+echo "<div class='elgg-subtext'>" . elgg_echo("html_email_handler:settings:embed_images:subtext") . "</div>";
+echo "</div>";
+
+echo "<div>";
+echo elgg_echo("html_email_handler:settings:proxy_host");
+echo elgg_view("input/text", array("name" => "params[proxy_host]", "value" => $plugin->proxy_host));
+echo "</div>";
+
+echo "<div>";
+echo elgg_echo("html_email_handler:settings:proxy_port");
+echo elgg_view("input/text", array("name" => "params[proxy_port]", "value" => $plugin->proxy_port));
+echo "</div>";

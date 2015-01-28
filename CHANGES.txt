@@ -4,6 +4,7 @@ Version history
 x.x:
 
 - added: normalize all URL's in the outgoing mail
+- added: option to embed images directly in the outgoing e-mail #20
 
 3.0 (2014-09-25):
 

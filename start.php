@@ -16,6 +16,7 @@ elgg_register_event_handler("pagesetup", "system", "html_email_handler_pagesetup
  * @return void
  */
 function html_email_handler_init() {
+	
 	// do we need to overrule default email notifications
 	if (elgg_get_plugin_setting("notifications", "html_email_handler") == "yes") {
 		// notification handler for nice From part
@@ -31,6 +32,9 @@ function html_email_handler_init() {
 	
 	// register html converter library
 	elgg_register_library("emogrifier", dirname(__FILE__) . "/vendors/emogrifier/Classes/Emogrifier.php");
+	
+	// plugin hooks
+	elgg_register_plugin_hook_handler("cron", "daily", "html_email_handler_daily_cron_hook");
 }
 
 /**
@@ -39,6 +43,7 @@ function html_email_handler_init() {
  * @return void
  */
 function html_email_handler_pagesetup() {
+	
 	// add a menu item to the Theming preview
 	elgg_register_menu_item("theme_sandbox", array(
 		"name" => "html_email_handler",
