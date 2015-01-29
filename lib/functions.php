@@ -517,6 +517,7 @@ function html_email_handler_get_image($image_url) {
 	if (empty($image_url)) {
 		return false;
 	}
+	$image_url = htmlspecialchars_decode($image_url);
 	$image_url = elgg_normalize_url($image_url);
 	
 	// check cache
