@@ -4,21 +4,20 @@
  */
 
 /**
- * This function sends out a full HTML mail. It can handle several options
- *
- * This function requires the options 'to' and ('html_message' or 'plaintext_message')
- *
- * @param array $options in the format:
- * 		to => STR|ARR of recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
- * 		from => STR of senden in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
- * 		subject => STR with the subject of the message
- * 		html_message => STR with the HTML version of the message
- * 		plaintext_message STR with the plaintext version of the message
- * 		cc => NULL|STR|ARR of CC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
- * 		bcc => NULL|STR|ARR of BCC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
- * 		date => NULL|UNIX timestamp with the date the message was created
- * 		attachments => NULL|ARR of array('mimetype', 'filename', 'content')
- *
+ * Sends out a full HTML mail
+ * 
+ * @param array $options In the format:
+ *     to => STR|ARR of recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
+ *     from => STR of senden in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
+ *     subject => STR with the subject of the message
+ *     body => STR with the message body
+ *     plaintext_message STR with the plaintext version of the message
+ *     html_message => STR with the HTML version of the message
+ *     cc => NULL|STR|ARR of CC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
+ *     bcc => NULL|STR|ARR of BCC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
+ *     date => NULL|UNIX timestamp with the date the message was created
+ *     attachments => NULL|ARR of array(array('mimetype', 'filename', 'content'))
+ * 
  * @return bool
  */
 function html_email_handler_send_email(array $options = null) {
@@ -80,6 +79,11 @@ function html_email_handler_send_email(array $options = null) {
 		$options["bcc"] = array($options["bcc"]);
 	}
 	
+	if (empty($options['html_message']) && empty($options['plaintext_message'])) {
+		$options['html_message'] = html_email_handler_make_html_body($options);
+		$options['plaintext_message'] = $options['body'];
+	}
+	
 	// can we send a message
 	if (empty($options["to"]) || (empty($options["html_message"]) && empty($options["plaintext_message"]))) {
 		return false;
@@ -90,31 +94,32 @@ function html_email_handler_send_email(array $options = null) {
 	//$boundary = uniqid($site->name);
 	$boundary = uniqid(elgg_get_friendly_title($site->name));
 	
+	$headers = $options['headers'];
+	
 	// start building headers
-	$headers = "";
 	if (!empty($options["from"])) {
-		$headers .= "From: " . $options["from"] . PHP_EOL;
+		$headers['From'] = $options['from'];
 	} else {
-		$headers .= "From: " . $site_from . PHP_EOL;
+		$headers['From'] = $site_from;
 	}
 	
 	// check CC mail
 	if (!empty($options["cc"])) {
-		$headers .= "Cc: " . implode(", ", $options["cc"]) . PHP_EOL;
+		$headers['Cc'] = implode(', ', $options['cc']);
 	}
 	
 	// check BCC mail
 	if (!empty($options["bcc"])) {
-		$headers .= "Bcc: " . implode(", ", $options["bcc"]) . PHP_EOL;
+		$headers['Bcc'] = implode(', ', $options['bcc']);
 	}
 	
 	// add a date header
 	if (!empty($options["date"])) {
-		$headers .= "Date: " . date("r", $options["date"]) . PHP_EOL;
+		$headers['Date'] = date('r', $options['date']);
 	}
 	
-	$headers .= "X-Mailer: PHP/" . phpversion() . PHP_EOL;
-	$headers .= "MIME-Version: 1.0" . PHP_EOL;
+	$headers['X-Mailer'] = ' PHP/' . phpversion();
+	$headers['MIME-Version'] = '1.0';
 	
 	// Facyla : try to add attchments if set
 	$attachments = "";
@@ -124,9 +129,7 @@ function html_email_handler_send_email(array $options = null) {
 		$attachment_counter = 0;
 		foreach ($options["attachments"] as $attachment) {
 			
-			// Alternatively fetch content based on a real file on server :
-			// use $attachment["filepath"] to load file content in $attachment["content"]
-			// @TODO : This has not been tested yet... careful !
+			// Alternatively fetch content based on an absolute path to a file on server:
 			if (empty($attachment["content"]) && !empty($attachment["filepath"])) {
 				$attachment["content"] = chunk_split(base64_encode(file_get_contents($attachment["filepath"])));
 			}
@@ -157,9 +160,21 @@ function html_email_handler_send_email(array $options = null) {
 	
 	// Use attachments headers for real only if they are valid
 	if (!empty($attachments)) {
-		$headers .= "Content-Type: multipart/mixed; boundary=\"mixed--" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+		$headers['Content-Type'] = "multipart/mixed; boundary=\"mixed--{$boundary}\"";
 	} else {
-		$headers .= "Content-Type: multipart/alternative; boundary=\"" . $boundary . "\"" . PHP_EOL . PHP_EOL;
+		$headers['Content-Type'] = "multipart/alternative; boundary=\"{$boundary}\"";
+	}
+	
+	$header_eol = "\r\n";
+	if (elgg_get_config('broken_mta')) {
+		// Allow non-RFC 2822 mail headers to support some broken MTAs
+		$header_eol = "\n";
+	}
+	
+	// stringify headers
+	$headers_string = '';
+	foreach ($headers as $key => $value) {
+		$headers_string .= "$key: $value{$header_eol}";
 	}
 	
 	// start building the message
@@ -175,7 +190,7 @@ function html_email_handler_send_email(array $options = null) {
 		$message .= "--" . $boundary . PHP_EOL;
 		$message .= "Content-Type: text/plain; charset=\"utf-8\"" . PHP_EOL;
 		$message .= "Content-Transfer-Encoding: base64" . PHP_EOL . PHP_EOL;
-
+		
 		// add content
 		$message .= chunk_split(base64_encode($plaintext_message)) . PHP_EOL . PHP_EOL;
 	}
@@ -252,7 +267,7 @@ function html_email_handler_send_email(array $options = null) {
 	}
 	$subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
 	
-	return mail($to, $subject, $message, $headers, $sendmail_options);
+	return mail($to, $subject, $message, $headers_string, $sendmail_options);
 }
 
 /**

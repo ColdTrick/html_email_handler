@@ -19,11 +19,7 @@ function html_email_handler_init() {
 	
 	// do we need to overrule default email notifications
 	if (elgg_get_plugin_setting("notifications", "html_email_handler") == "yes") {
-		// notification handler for nice From part
-		elgg_unregister_plugin_hook_handler("send", "notification:email", "_elgg_send_email_notification");
-		elgg_register_plugin_hook_handler("send", "notification:email", "html_email_handler_send_email_notifications_hook");
-		
-		// register hook to handle the rest of the email being send
+		// Handler that takes care of sending emails as HTML
 		elgg_register_plugin_hook_handler("email", "system", "html_email_handler_email_hook");
 	}
 	
