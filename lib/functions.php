@@ -309,7 +309,7 @@ function html_email_handler_make_html_body($options = "", $body = "") {
 	global $CONFIG;
 	
 	if (!is_array($options)) {
-		elgg_deprecated_notice("html_email_handler_make_html_body now takes an array as param, please update you're code", "1.9");
+		elgg_deprecated_notice("html_email_handler_make_html_body now takes an array as param, please update your code", "1.9");
 		
 		$options = array(
 			"subject" => $options,
@@ -403,7 +403,7 @@ function html_email_handler_make_rfc822_address(ElggEntity $entity, $use_fallbac
 			$name = '"' . $name . '"'; // Protect the name with quotations if it contains a comma
 		}
 		
-		$name = "=?UTF-8?B?" . base64_encode($name) . "?="; // Encode the name. If may content nos ASCII chars.
+		$name = "=?UTF-8?B?" . base64_encode($name) . "?="; // Encode the name. If may content non ASCII chars.
 		$email = $name . " <" . $email . ">";
 	}
 	
