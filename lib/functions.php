@@ -5,7 +5,7 @@
 
 /**
  * Sends out a full HTML mail
- * 
+ *
  * @param array $options In the format:
  *     to => STR|ARR of recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
  *     from => STR of senden in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
@@ -17,7 +17,7 @@
  *     bcc => NULL|STR|ARR of BCC recipients in RFC-2822 format (http://www.faqs.org/rfcs/rfc2822.html)
  *     date => NULL|UNIX timestamp with the date the message was created
  *     attachments => NULL|ARR of array(array('mimetype', 'filename', 'content'))
- * 
+ *
  * @return bool
  */
 function html_email_handler_send_email(array $options = null) {
@@ -26,23 +26,9 @@ function html_email_handler_send_email(array $options = null) {
 	$site = elgg_get_site_entity();
 	
 	// make site email
-	if (!empty($site->email)) {
-		$site_from = html_email_handler_make_rfc822_address($site);
-	} else {
-		// no site email, so make one up
-		$site_from = "noreply@" . $site->getDomain();
-		
-		if (!empty($site->name)) {
-			$site_name = $site->name;
-			if (strstr($site_name, ",")) {
-				$site_name = '"' . $site_name . '"'; // Protect the name with quotations if it contains a comma
-			}
-			
-			$site_name = "=?UTF-8?B?" . base64_encode($site_name) . "?="; // Encode the name. If may content nos ASCII chars.
-			$site_from = $site_name . " <" . $site_from . ">";
-		}
-	}
+	$site_from = html_email_handler_make_rfc822_address($site);
 	
+	// get sendmail options
 	$sendmail_options = html_email_handler_get_sendmail_options();
 	
 	if (!isset($limit_subject)) {
