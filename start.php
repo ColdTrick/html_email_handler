@@ -17,12 +17,6 @@ elgg_register_event_handler("pagesetup", "system", "html_email_handler_pagesetup
  */
 function html_email_handler_init() {
 	
-	// do we need to overrule default email notifications
-	if (elgg_get_plugin_setting("notifications", "html_email_handler") == "yes") {
-		// Handler that takes care of sending emails as HTML
-		elgg_register_plugin_hook_handler("email", "system", "html_email_handler_email_hook");
-	}
-	
 	// register page_handler for nice URL's
 	elgg_register_page_handler("html_email_handler", "html_email_handler_page_handler");
 	
@@ -31,6 +25,9 @@ function html_email_handler_init() {
 	
 	// plugin hooks
 	elgg_register_plugin_hook_handler("cron", "daily", "html_email_handler_daily_cron_hook");
+	// Handler that takes care of sending emails as HTML
+	elgg_register_plugin_hook_handler("email", "system", "html_email_handler_email_hook");
+	
 }
 
 /**
