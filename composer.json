@@ -1,0 +1,7 @@
+{
+    "name": "coldtrick/html_email_handler",
+    "type": "elgg-plugin",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
