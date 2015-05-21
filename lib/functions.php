@@ -248,6 +248,7 @@ function html_email_handler_send_email(array $options = null) {
 	
 	// encode subject to handle special chars
 	$subject = $options["subject"];
+	$subject = html_entity_decode($subject, ENT_QUOTES, 'UTF-8'); // Decode any html entities
 	if ($limit_subject) {
 		$subject = elgg_get_excerpt($subject, 175);
 	}
