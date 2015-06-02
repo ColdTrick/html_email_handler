@@ -54,6 +54,21 @@ function html_email_handler_send_email(array $options = null) {
 	// merge options
 	$options = array_merge($default_options, $options);
 	
+	// redo to/from for notifications
+	$notification = elgg_extract('notification', $options);
+	if (!empty($notification) && ($notification instanceof \Elgg\Notifications\Notification)) {
+		$recipient = $notification->getRecipient();
+		$sender = $notification->getSender();
+		
+		$options['to'] = html_email_handler_make_rfc822_address($recipient);
+		
+		if (!($sender instanceof \ElggUser) && $sender->email) {
+			$options['from'] = html_email_handler_make_rfc822_address($sender);
+		} else {
+			$options['from'] = $site_from;
+		}
+	}
+	
 	// check options
 	if (!empty($options["to"]) && !is_array($options["to"])) {
 		$options["to"] = array($options["to"]);
