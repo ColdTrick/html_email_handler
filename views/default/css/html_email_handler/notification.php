@@ -1,6 +1,6 @@
 <?php
 /**
- * The main CSS for all outgoing emmail notifications
+ * The main CSS for all outgoing email notifications
  */
 ?>
 body {

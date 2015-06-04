@@ -32,9 +32,10 @@ echo $html_message_ext;
 if (get_input("mail")) {
 	// Test sending a basic HTML mail
 	$options = array(
-		"to" => $user->email,
-		"subject" => $subject,
-		"body" => $plain_message,
+		'to' => $user->email,
+		'subject' => $subject,
+		'body' => $plain_message,
+		'recipient' => $user,
 		'attachments' => array(
 			array(
 				'filepath' => dirname(__DIR__) . '/manifest.xml',
@@ -49,11 +50,14 @@ if (get_input("mail")) {
 	$from = $site->guid;
 	$subject = 'Notification test';
 	$message = 'This notification has been sent using notify_user() and it should have an attachment.';
-	$params = array('attachments' => array(
-		array(
-			'filepath' => dirname(__DIR__) . '/manifest.xml',
-		),
-	));
+	$params = array(
+		'recipient' => $user,
+		'attachments' => array(
+			array(
+				'filepath' => dirname(__DIR__) . '/manifest.xml',
+			)
+		)
+	);
 
 	notify_user($to, $from, $subject, $message, $params, array('email'));
 }
