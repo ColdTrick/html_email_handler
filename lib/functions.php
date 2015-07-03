@@ -61,6 +61,9 @@ function html_email_handler_send_email(array $options = null) {
 		$sender = $notification->getSender();
 		
 		$options['to'] = html_email_handler_make_rfc822_address($recipient);
+		if (!isset($options['recipient'])) {
+			$options['recipient'] = $recipient;
+		}
 		
 		if (!($sender instanceof \ElggUser) && $sender->email) {
 			$options['from'] = html_email_handler_make_rfc822_address($sender);
