@@ -29,6 +29,8 @@ notifications:
 
 # before deployment make the zipfile to upload
 before_deploy:
+ # don't install dev packages
+ composer install --no-dev
  # go down one directory
  - cd ..
  # exclude all .git directories
