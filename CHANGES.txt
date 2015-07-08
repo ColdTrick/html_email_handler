@@ -1,12 +1,24 @@
 Version history
 ===============
 
-x.x:
+3.1 (2015-07-08):
 
+- added: composer support
 - added: normalize all URL's in the outgoing mail
 - added: option to embed images directly in the outgoing e-mail #20
 - added: option to send the test page to email
+- changed: get emogrifier by using composer
 - changed: test page uses inline CSS, normalized urls and embedded images
+- changed: extended the embed options with a choice between base64 and attachments
+- changed: reduce redundancy by using only one function to handle all outgoing HTML mail #26 #27
+- fixed: also pass recipient into mail body to be used in message body
+- fixed: invalid image urls in some cases
+- fixed: possibility for encoded html subjects
+- fixed: recipient not available in message body #32
+- fixed: to and from email address for notifcations in RFC822 format
+- fixed: travis syntax error
+- fixed: usage of deprecated functions
+- fixed: URLs found from notification body now get converted into formatted links
 
 3.0 (2014-09-25):
 
