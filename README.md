@@ -2,6 +2,8 @@ HTML Email Handler
 ==================
 
 [![Build Status](https://scrutinizer-ci.com/g/ColdTrick/html_email_handler/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ColdTrick/html_email_handler/build-status/master)
+[![Latest Stable Version](https://poser.pugx.org/coldtrick/html_email_handler/v/stable.svg)](https://packagist.org/packages/coldtrick/html_email_handler)
+[![License](https://poser.pugx.org/coldtrick/html_email_handler/license.svg)](https://packagist.org/packages/coldtrick/html_email_handler)
 
 Send out full HTML mails to your users
 
