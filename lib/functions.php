@@ -135,11 +135,13 @@ function html_email_handler_send_email(array $options = null) {
 			
 			// Alternatively fetch content based on an absolute path to a file on server:
 			if (empty($attachment["content"]) && !empty($attachment["filepath"])) {
-				$attachment["content"] = chunk_split(base64_encode(file_get_contents($attachment["filepath"])));
+				if (is_file($attachment["filepath"])) {
+					$attachment["content"] = chunk_split(base64_encode(file_get_contents($attachment["filepath"])));
+				}
 			}
 			
 			// Cannot attach an empty file in any case..
-			if (empty($attachment["content"])) {
+			if (!elgg_extract('content', $attachment)) {
 				continue;
 			}
 			
