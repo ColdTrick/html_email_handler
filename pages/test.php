@@ -24,10 +24,12 @@ $html_message = elgg_view("html_email_handler/notification/body", array(
 ));
 
 $html_message = html_email_handler_css_inliner($html_message);
-$html_message_ext = html_email_handler_normalize_urls($html_message);
-$html_message_ext = html_email_handler_base64_encode_images($html_message_ext);
+if (!empty($html_message)) {
+	$html_message = html_email_handler_normalize_urls($html_message);
+	$html_message = html_email_handler_base64_encode_images($html_message);
+}
 
-echo $html_message_ext;
+echo $html_message;
 
 if (get_input("mail")) {
 	// Test sending a basic HTML mail

@@ -585,7 +585,7 @@ function html_email_handler_get_image($image_url) {
 		}
 	}
 	
-	if ($proxy_port) {
+	if (!empty($proxy_port)) {
 		curl_setopt($ch, CURLOPT_PROXYPORT, $proxy_port);
 	}
 	
@@ -602,7 +602,7 @@ function html_email_handler_get_image($image_url) {
 			}
 		}
 		
-		if ($session_cookie) {
+		if (!empty($session_cookie)) {
 			curl_setopt($ch, CURLOPT_COOKIE, $session_cookie);
 		}
 	}
