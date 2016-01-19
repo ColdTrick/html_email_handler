@@ -3,7 +3,7 @@ language: php
 
 # which versions of PHP to build with
 php:
-- 5.5
+- 5.6
 
 # set global environment variables
 env:
@@ -29,20 +29,14 @@ notifications:
 
 # before deployment make the zipfile to upload
 before_deploy:
- # don't install dev packages
- - composer install --no-dev
- # go down one directory
- - cd ..
- # exclude all .git directories
- - zip -r $PROJECTNAME/${PROJECTNAME}_$TRAVIS_TAG.zip $PROJECTNAME -x $PROJECTNAME/.git/**\* $PROJECTNAME/.git/ $PROJECTNAME/**/.git/**\* $PROJECTNAME/**/.git/
- # return to the main directory for the next step
- - cd $PROJECTNAME
+ # execute release prepare script
+ - sh ./vendor/coldtrick/releases/scripts/travis/before_deploy.sh
 
 # deployment settings
 deploy:
   provider: releases
-  api-key:
-    secure: BnaEH4XJrO5iW31KNCmDixQBXxkmWMJ+joulCv5BmD4NoE2SuNtWveg2z7aqNfy43gG4aqQZFn/FSPBdpJGLKCxgCSFEgNB++5kYuyqKPhs4N/LA0jizuHyon2meeyfrnBXiTFh3uOr1eOmMH7u5mNy39kPEnCdn10bt16ZCxqk=
+  api_key:
+    secure: JG3icc9ibBH+US/lwmMhSVVjplHurspX4KOugmZ/KSdZVkZGPF1VVXUoUnsfEgCa9IVN+kkdb2wRs8kks+hN9a6cvFbmtRR6HyhvBPt/tEZHgzuXcK0V7oKIWrOhr6qx2UQ8zQJDyqqi12BFKCPBt33xFXpH8RAmi6CSbCqcanM=
   # name of the zip to upload
   file: ${PROJECTNAME}_$TRAVIS_TAG.zip
   skip_cleanup: true
@@ -50,3 +44,7 @@ deploy:
     # only when a tag is created in GitHub
     tags: true
     all_branches: true
+
+after_deploy:
+ # execute release after script
+ - sh ./vendor/coldtrick/releases/scripts/travis/after_deploy.sh
