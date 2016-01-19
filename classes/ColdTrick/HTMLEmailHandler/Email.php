@@ -24,7 +24,7 @@ class Email {
 	 *
 	 * @return void|bool
 	 */
-	public static function email($hook, $type, $return_value, $params) {
+	public static function emailHandler($hook, $type, $return_value, $params) {
 		static $plugin_setting;
 		
 		if (!isset($plugin_setting)) {
