@@ -2,6 +2,7 @@ HTML Email Handler
 ==================
 
 [![Build Status](https://scrutinizer-ci.com/g/ColdTrick/html_email_handler/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ColdTrick/html_email_handler/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ColdTrick/html_email_handler/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ColdTrick/html_email_handler/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/coldtrick/html_email_handler/v/stable.svg)](https://packagist.org/packages/coldtrick/html_email_handler)
 [![License](https://poser.pugx.org/coldtrick/html_email_handler/license.svg)](https://packagist.org/packages/coldtrick/html_email_handler)
 
@@ -35,9 +36,9 @@ Please check if you have one (or more) of the following
 
 [developers_url]: /admin/plugins#developers
 [test_url]: /html_email_handler/test
-[phpmailer_url]: http://community.elgg.org/plugins/384769/1.0/phpmailer
-[html_mail_url]: http://community.elgg.org/plugins/566028/v1.0/html-mails
-[mail_queue_url]: http://community.elgg.org/plugins/616834/1.1/mail-queue
+[phpmailer_url]: http://community.elgg.org/plugins/384769
+[html_mail_url]: http://community.elgg.org/plugins/566028
+[mail_queue_url]: http://community.elgg.org/plugins/616834
 
 
 File attachements notes and documentation
