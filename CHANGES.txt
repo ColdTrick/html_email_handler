@@ -1,6 +1,11 @@
 Version history
 ===============
 
+3.1.1 (2016-01-19):
+
+- fixed: php warning when attaching non-existing file
+- fixed: wrong composer include
+
 3.1 (2015-07-08):
 
 - added: composer support
