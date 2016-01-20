@@ -1,6 +1,12 @@
 Version history
 ===============
 
+4.0 (2016-01-20):
+
+- changed: require Elgg 2.0
+- changed: test page attachments have a filename
+- fixed: powered by Elgg logo location
+
 3.1.1 (2016-01-19):
 
 - fixed: php warning when attaching non-existing file
