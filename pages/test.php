@@ -8,20 +8,20 @@ elgg_admin_gatekeeper();
 $user = elgg_get_logged_in_user_entity();
 $site = elgg_get_site_entity();
 
-$subject = elgg_echo("useradd:subject");
-$plain_message = elgg_echo("useradd:body", array(
+$subject = elgg_echo('useradd:subject');
+$plain_message = elgg_echo('useradd:body', [
 	$user->name,
 	$site->name,
 	$site->url,
 	$user->username,
 	'test123',
-));
+]);
 
-$html_message = elgg_view("html_email_handler/notification/body", array(
-	"subject" => $subject,
-	"body" => $plain_message,
-	"recipient" => $user
-));
+$html_message = elgg_view('html_email_handler/notification/body', [
+	'subject' => $subject,
+	'body' => $plain_message,
+	'recipient' => $user,
+]);
 
 $html_message = html_email_handler_css_inliner($html_message);
 if (!empty($html_message)) {
@@ -31,19 +31,21 @@ if (!empty($html_message)) {
 
 echo $html_message;
 
-if (get_input("mail")) {
+if (get_input('mail')) {
 	// Test sending a basic HTML mail
-	$options = array(
+	$options = [
 		'to' => $user->email,
 		'subject' => $subject,
 		'body' => $plain_message,
 		'recipient' => $user,
-		'attachments' => array(
-			array(
+		'attachments' => [
+			[
 				'filepath' => dirname(__DIR__) . '/manifest.xml',
-			),
-		),
-	);
+				'filename' => 'manifest.xml',
+				'mimetype' => 'application/xml',
+			],
+		],
+	];
 
 	html_email_handler_send_email($options);
 
@@ -52,14 +54,16 @@ if (get_input("mail")) {
 	$from = $site->guid;
 	$subject = 'Notification test';
 	$message = 'This notification has been sent using notify_user() and it should have an attachment.';
-	$params = array(
+	$params = [
 		'recipient' => $user,
-		'attachments' => array(
-			array(
+		'attachments' => [
+			[
 				'filepath' => dirname(__DIR__) . '/manifest.xml',
-			)
-		)
-	);
+				'filename' => 'manifest.xml',
+				'mimetype' => 'application/xml',
+			],
+		],
+	];
 
-	notify_user($to, $from, $subject, $message, $params, array('email'));
+	notify_user($to, $from, $subject, $message, $params, ['email']);
 }
