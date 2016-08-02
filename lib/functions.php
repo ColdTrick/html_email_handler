@@ -48,7 +48,7 @@ function html_email_handler_send_email(array $options = null) {
 		"plaintext_message" => "",
 		"cc" => array(),
 		"bcc" => array(),
-		"date" => null,
+		"date" => time(),
 	);
 	
 	// merge options
