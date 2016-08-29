@@ -1,6 +1,10 @@
 Version history
 ===============
 
+4.0.1 (2016-08-29):
+
+- fixed: message should have a Date header
+
 4.0 (2016-01-20):
 
 - changed: require Elgg 2.0
