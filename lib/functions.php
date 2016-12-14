@@ -88,6 +88,17 @@ function html_email_handler_send_email(array $options = null) {
 		$options['plaintext_message'] = $options['body'];
 	}
 	
+	// Ensure there is an alternate text version if missing
+	if (empty($options['plaintext_message'])) {
+		$options['plaintext_message'] = $options['html_message'];
+	}
+	
+	// Also ensure text version does not contain anything but plain text
+	// Note: line breaks should not be removed by html-izer, no need to  add br2nl
+	if (!empty($options['plaintext_message'])) {
+		$options['plaintext_message'] = strip_tags($options['plaintext_message']);
+	}
+	
 	// can we send a message
 	if (empty($options["to"]) || (empty($options["html_message"]) && empty($options["plaintext_message"]))) {
 		return false;
