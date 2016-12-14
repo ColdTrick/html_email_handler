@@ -84,8 +84,8 @@ function html_email_handler_send_email(array $options = null) {
 	}
 	
 	if (empty($options['html_message']) && empty($options['plaintext_message'])) {
-		$options['html_message'] = html_email_handler_make_html_body($options);
 		$options['plaintext_message'] = $options['body'];
+		$options['html_message'] = html_email_handler_make_html_body($options);
 	}
 	
 	// Ensure there is an alternate text version if missing
