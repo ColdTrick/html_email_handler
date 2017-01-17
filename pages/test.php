@@ -17,13 +17,12 @@ $plain_message = elgg_echo('useradd:body', [
 	'test123',
 ]);
 
-$html_message = elgg_view('html_email_handler/notification/body', [
+$html_message = html_email_handler_make_html_body([
 	'subject' => $subject,
 	'body' => $plain_message,
 	'recipient' => $user,
 ]);
 
-$html_message = html_email_handler_css_inliner($html_message);
 if (!empty($html_message)) {
 	$html_message = html_email_handler_normalize_urls($html_message);
 	$html_message = html_email_handler_base64_encode_images($html_message);
