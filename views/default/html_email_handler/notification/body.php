@@ -3,7 +3,8 @@
 use Elgg\Filesystem\Directory;
 
 $subject = elgg_extract("subject", $vars);
-$message = nl2br(elgg_extract("body", $vars));
+$message = elgg_extract("body", $vars);
+
 $language = elgg_extract("language", $vars, get_current_language());
 $recipient = elgg_extract("recipient", $vars);
 

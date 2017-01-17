@@ -345,6 +345,9 @@ function html_email_handler_make_html_body($options = "", $body = "") {
 	$options = array_merge($defaults, $options);
 	
 	$options['body'] = parse_urls($options['body']);
+	// Remove end of line after HTML tags except for <a> tag
+	$options['body'] = preg_replace("/([^a])>(\r?\n|\r)/", "$1>", $options['body']);
+	$options['body'] = elgg_autop($options['body']);
 	
 	// in some cases when pagesetup isn't done yet this can cause problems
 	// so manualy set is to done
