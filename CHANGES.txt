@@ -1,6 +1,10 @@
 Version history
 ===============
 
+4.0.2 (2017-01-26):
+
+- fixed: html body stying
+
 4.0.1 (2016-08-29):
 
 - fixed: message should have a Date header
