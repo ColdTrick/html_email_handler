@@ -30,6 +30,9 @@ class Cron {
 			return;
 		}
 		
+		echo 'Stating HTMLEmailHandler image cleanup' . PHP_EOL;
+		elgg_log('Stating HTMLEmailHandler image cleanup', 'NOTICE');
+		
 		$max_lifetime = elgg_extract('time', $params, time()) - (24 * 60 * 60);
 		
 		while (($filename = readdir($dh)) !== false) {
@@ -48,5 +51,8 @@ class Cron {
 		}
 		
 		closedir($dh);
+		
+		echo 'Done with HTMLEmailHandler image cleanup' . PHP_EOL;
+		elgg_log('Done with HTMLEmailHandler image cleanup', 'NOTICE');
 	}
 }
