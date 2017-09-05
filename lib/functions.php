@@ -189,8 +189,8 @@ function html_email_handler_send_email(array $options = null) {
 	// TEXT part of message
 	$plaintext_message = elgg_extract("plaintext_message", $options);
 	if (!empty($plaintext_message)) {
-		// normalize URL's in the text
-		$plaintext_message = html_email_handler_normalize_urls($plaintext_message);
+		// strip html tags from message
+		$plaintext_message = elgg_strip_tags($plaintext_message);
 		
 		// add boundry / content type
 		$message .= "--" . $boundary . PHP_EOL;
