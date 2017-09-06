@@ -1,6 +1,10 @@
 Version history
 ===============
 
+4.0.3 (2017-09-06):
+
+- fixed: html markup in plaintext part of the email message
+
 4.0.2 (2017-01-26):
 
 - fixed: html body stying
