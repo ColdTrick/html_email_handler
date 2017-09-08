@@ -547,9 +547,9 @@ function html_email_handler_get_image($image_url) {
 	
 	// check cache
 	if (!isset($cache_dir)) {
-		$cache_dir = elgg_get_config("dataroot") . "html_email_handler/image_cache/";
+		$cache_dir = elgg_get_data_path() . 'html_email_handler/image_cache/';
 		if (!is_dir($cache_dir)) {
-			mkdir($cache_dir, "0755", true);
+			mkdir($cache_dir, '0755', true);
 		}
 	}
 	
@@ -569,7 +569,7 @@ function html_email_handler_get_image($image_url) {
 	if (!isset($proxy_host)) {
 		$proxy_host = false;
 		
-		$setting = elgg_get_plugin_setting("proxy_host", "html_email_handler");
+		$setting = elgg_get_plugin_setting('proxy_host', 'html_email_handler');
 		if (!empty($setting)) {
 			$proxy_host = $setting;
 		}
@@ -582,7 +582,7 @@ function html_email_handler_get_image($image_url) {
 	if (!isset($proxy_port)) {
 		$proxy_port = false;
 		
-		$setting = (int) elgg_get_plugin_setting("proxy_port", "html_email_handler");
+		$setting = (int) elgg_get_plugin_setting('proxy_port', 'html_email_handler');
 		if ($setting > 0) {
 			$proxy_port = $setting;
 		}
@@ -597,11 +597,11 @@ function html_email_handler_get_image($image_url) {
 		if (!isset($session_cookie)) {
 			$session_cookie = false;
 			
-			$cookie_settings = elgg_get_config("cookie");
+			$cookie_settings = elgg_get_config('cookies');
 			if (!empty($cookie_settings)) {
-				$cookie_name = elgg_extract("name", $cookie_settings["session"]);
+				$cookie_name = elgg_extract('name', $cookie_settings['session']);
 				
-				$session_cookie = $cookie_name . "=" . session_id();
+				$session_cookie = $cookie_name . '=' . session_id();
 			}
 		}
 		
@@ -623,7 +623,7 @@ function html_email_handler_get_image($image_url) {
 	
 	// build a valid uri
 	// https://en.wikipedia.org/wiki/Data_URI_scheme
-	$base64_result = $content_type . ";charset=UTF-8;base64," . base64_encode($contents);
+	$base64_result = $content_type . ';charset=UTF-8;base64,' . base64_encode($contents);
 	
 	// write to cache
 	file_put_contents($cache_dir . $cache_file, $base64_result);
