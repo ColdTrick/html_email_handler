@@ -98,7 +98,7 @@ function html_email_handler_send_email(array $options = null) {
 	//$boundary = uniqid($site->name);
 	$boundary = uniqid(elgg_get_friendly_title($site->name));
 	
-	$headers = $options['headers'];
+	$headers = elgg_extract('headers', $options, []);
 	
 	// start building headers
 	if (!empty($options["from"])) {
