@@ -55,14 +55,6 @@ a {
 	text-align: right;
 }
 
-#notification_footer_logo {
-	float: left;
-}
-
-#notification_footer_logo img {
-	border: none;
-}
-
 .clearfloat {
 	clear:both;
 	height:0;

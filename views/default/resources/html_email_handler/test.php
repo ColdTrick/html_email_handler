@@ -8,9 +8,9 @@ $site = elgg_get_site_entity();
 
 $subject = elgg_echo('useradd:subject');
 $plain_message = elgg_echo('useradd:body', [
-	$user->name,
-	$site->name,
-	$site->url,
+	$user->getDisplayName(),
+	$site->getDisplayName(),
+	$site->getURL(),
 	$user->username,
 	'test123',
 ]);
@@ -28,39 +28,41 @@ if (!empty($html_message)) {
 
 echo $html_message;
 
-if (get_input('mail')) {
-	// Test sending a basic HTML mail
-	$options = [
-		'to' => $user->email,
-		'subject' => $subject,
-		'body' => $plain_message,
-		'recipient' => $user,
-		'attachments' => [
-			[
-				'filepath' => dirname(__DIR__) . '/manifest.xml',
-				'filename' => 'manifest.xml',
-				'mimetype' => 'application/xml',
-			],
-		],
-	];
-
-	html_email_handler_send_email($options);
-
-	// Test sending attachments through notify_user()
-	$to = $user->guid;
-	$from = $site->guid;
-	$subject = 'Notification test';
-	$message = 'This notification has been sent using notify_user() and it should have an attachment.';
-	$params = [
-		'recipient' => $user,
-		'attachments' => [
-			[
-				'filepath' => dirname(__DIR__) . '/manifest.xml',
-				'filename' => 'manifest.xml',
-				'mimetype' => 'application/xml',
-			],
-		],
-	];
-
-	notify_user($to, $from, $subject, $message, $params, ['email']);
+if (!get_input('mail')) {
+	return;
 }
+
+// Test sending a basic HTML mail
+$options = [
+	'to' => $user->email,
+	'subject' => $subject,
+	'body' => $plain_message,
+	'recipient' => $user,
+	'attachments' => [
+		[
+			'filepath' => elgg_get_plugin_from_id('html_email_handler')->getPath() . 'manifest.xml',
+			'filename' => 'manifest.xml',
+			'mimetype' => 'application/xml',
+		],
+	],
+];
+
+html_email_handler_send_email($options);
+
+// Test sending attachments through notify_user()
+$to = $user->guid;
+$from = $site->guid;
+$subject = 'Notification test';
+$message = 'This notification has been sent using notify_user() and it should have an attachment.';
+$params = [
+	'recipient' => $user,
+	'attachments' => [
+		[
+			'filepath' => elgg_get_plugin_from_id('html_email_handler')->getPath() . 'manifest.xml',
+			'filename' => 'manifest.xml',
+			'mimetype' => 'application/xml',
+		],
+	],
+];
+
+notify_user($to, $from, $subject, $message, $params, ['email']);
