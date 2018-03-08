@@ -3,8 +3,6 @@
  * A test page for theme developer to view the layout of an email notification
  */
 
-elgg_admin_gatekeeper();
-
 $user = elgg_get_logged_in_user_entity();
 $site = elgg_get_site_entity();
 
