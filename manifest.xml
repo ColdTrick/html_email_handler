@@ -13,30 +13,13 @@
 	
 	<requires>
 		<type>elgg_release</type>
-		<version>2.0</version>
+		<version>3.0</version>
 	</requires>
+	
 	<requires>
 		<type>php_extension</type>
 		<name>dom</name>
 	</requires>
-	
-	<suggests>
-		<type>plugin</type>
-		<name>developers</name>
-	</suggests>
- 	
- 	<conflicts>
-		<type>plugin</type>
-		<name>phpmailer</name>
-	</conflicts>
-	<conflicts>
-		<type>plugin</type>
-		<name>html_mail</name>
-	</conflicts>
-	<conflicts>
-		<type>plugin</type>
-		<name>mail_queue</name>
-	</conflicts>
- 	
+	 	
  	<category>ColdTrick</category>
 </plugin_manifest>

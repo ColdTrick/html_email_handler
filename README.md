@@ -24,22 +24,8 @@ Features
 If you have the **[developers][developers_url]** plugin enabled you can easily design the layout of your HTML message, check the Theming sandbox. <br />
 Otherwise you can go to [the test url][test_url] to design the layout.
 
-Conflicts
----------
-
-As this plugin offers some of the same functionality as other plugins their may be a conflict.
-Please check if you have one (or more) of the following
-
-- [phpmailer][phpmailer_url]
-- [html_mail][html_mail_url]
-- [mail_queue][mail_queue_url]
-
 [developers_url]: /admin/plugins#developers
 [test_url]: /html_email_handler/test
-[phpmailer_url]: http://community.elgg.org/plugins/384769
-[html_mail_url]: http://community.elgg.org/plugins/566028
-[mail_queue_url]: http://community.elgg.org/plugins/616834
-
 
 File attachements notes and documentation
 -----------------------------------------
