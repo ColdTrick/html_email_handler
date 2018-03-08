@@ -8,7 +8,6 @@
 		
 		// settings - configuraciones
 		
-		'html_email_handler:settings:notifications:description' => "Cuando active esta opción, todas las notificaciones hacia los usuarios de su sitio web serán formateadas en HTML.",
 		'html_email_handler:settings:notifications' => "Usar como el manejador de notificaciones de correo predeterminado",
 		'html_email_handler:settings:notifications:subtext' => "Se enviarán todos los mails de salida con formato HTML",
 		

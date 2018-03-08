@@ -15,7 +15,6 @@ return array (
   'html_email_handler:settings:limit_subject:subtext' => 'Schakel deze optie in indien gebruikers melden dat ze onleesbare onderwerpen in hun e-mail client zien (voornamelijk Outlook). Dit kan er potentieel voor zorgen dat er informatie verloren gaat in het onderwerp.',
   'html_email_handler' => 'HTML E-mail handler',
   'html_email_handler:theme_preview:menu' => 'HTML notificatie',
-  'html_email_handler:settings:notifications:description' => 'Als je deze optie inschakelt zullen alle notificaties naar de gebruikers worden verzonden in HTML formaat.',
   'html_email_handler:settings:notifications' => 'Gebruik als standaard e-mail notificatie methode',
   'html_email_handler:settings:notifications:subtext' => 'Dit zal alle e-mail berichten verzenden als HTML mails',
   'html_email_handler:settings:sendmail_options' => 'Additionele parameters voor sendmail (optioneel)',
