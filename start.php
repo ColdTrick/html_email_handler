@@ -15,8 +15,6 @@ elgg_register_event_handler('init', 'system', 'html_email_handler_init');
  * @return void
  */
 function html_email_handler_init() {
-	// plugin hooks
-	elgg_register_plugin_hook_handler('cron', 'daily', '\ColdTrick\HTMLEmailHandler\Cron::imageCacheCleanup');
 	// Handler that takes care of sending emails as HTML
 	elgg_register_plugin_hook_handler('email', 'system', '\ColdTrick\HTMLEmailHandler\Email::emailHandler');
 	elgg_register_plugin_hook_handler('register', 'menu:theme_sandbox', '\ColdTrick\HTMLEmailHandler\ThemeSandbox::menu');

@@ -537,27 +537,19 @@ function html_email_handler_get_image($image_url) {
 	static $proxy_host;
 	static $proxy_port;
 	static $session_cookie;
-	static $cache_dir;
 	
 	if (empty($image_url)) {
 		return false;
 	}
 	$image_url = htmlspecialchars_decode($image_url);
 	$image_url = elgg_normalize_url($image_url);
-	
-	// check cache
-	if (!isset($cache_dir)) {
-		$cache_dir = elgg_get_data_path() . 'html_email_handler/image_cache/';
-		if (!is_dir($cache_dir)) {
-			mkdir($cache_dir, '0755', true);
-		}
+		
+	$cache_name = 'html_email_handler_' . md5($image_url);
+	$cache_result = elgg_load_system_cache($cache_name);
+	if ($cache_result) {
+		return $cache_result;
 	}
-	
-	$cache_file = md5($image_url);
-	if (file_exists($cache_dir . $cache_file)) {
-		return file_get_contents($cache_dir . $cache_file);
-	}
-	
+		
 	// build cURL options
 	$ch = curl_init($image_url);
 	
@@ -567,12 +559,8 @@ function html_email_handler_get_image($image_url) {
 	
 	// set proxy settings
 	if (!isset($proxy_host)) {
-		$proxy_host = false;
-		
 		$setting = elgg_get_plugin_setting('proxy_host', 'html_email_handler');
-		if (!empty($setting)) {
-			$proxy_host = $setting;
-		}
+		$proxy_host = !empty($setting) ? $setting : false;
 	}
 	
 	if ($proxy_host) {
@@ -580,12 +568,8 @@ function html_email_handler_get_image($image_url) {
 	}
 	
 	if (!isset($proxy_port)) {
-		$proxy_port = false;
-		
 		$setting = (int) elgg_get_plugin_setting('proxy_port', 'html_email_handler');
-		if ($setting > 0) {
-			$proxy_port = $setting;
-		}
+		$proxy_port = ($setting > 0) ? $setting : false;
 	}
 	
 	if (!empty($proxy_port)) {
@@ -626,7 +610,7 @@ function html_email_handler_get_image($image_url) {
 	$base64_result = $content_type . ';charset=UTF-8;base64,' . base64_encode($contents);
 	
 	// write to cache
-	file_put_contents($cache_dir . $cache_file, $base64_result);
+	elgg_save_system_cache($cache_name, $base64_result);
 	
 	// return result
 	return $base64_result;
@@ -692,9 +676,9 @@ function html_email_handler_attach_images($text) {
 		return $text;
 	}
 	
-	$result = array(
-		"images" => array()
-	);
+	$result = [
+		'images' => [],
+	];
 	
 	foreach ($image_urls as $url) {
 		// remove wrapping quotes from the url
@@ -712,12 +696,12 @@ function html_email_handler_attach_images($text) {
 		// Unique ID
 		$uid = uniqid();
 		
-		$result["images"][] = array(
-			"uid" => $uid,
-			"content_type" => $content_type,
-			"data" => $data,
-			"name" => basename($image_url)
-		);
+		$result['images'][] = [
+			'uid' => $uid,
+			'content_type' => $content_type,
+			'data' => $data,
+			'name' => basename($image_url),
+		];
 		
 		// replace url in the text with uid
 		$replacement = str_replace($image_url, "cid:" . $uid, $url);
@@ -726,7 +710,7 @@ function html_email_handler_attach_images($text) {
 	}
 	
 	// return new text
-	$result["text"] = $text;
+	$result['text'] = $text;
 	
 	// return result
 	return $result;
