@@ -24,10 +24,7 @@ function html_email_handler_send_email(array $options = null) {
 	static $limit_subject;
 	
 	$site = elgg_get_site_entity();
-	
-	// make site email
-	$site_from = html_email_handler_make_rfc822_address($site);
-	
+		
 	// get sendmail options
 	$sendmail_options = html_email_handler_get_sendmail_options();
 	
@@ -42,7 +39,6 @@ function html_email_handler_send_email(array $options = null) {
 	// set default options
 	$default_options = array(
 		"to" => array(),
-		"from" => $site_from,
 		"subject" => "",
 		"html_message" => "",
 		"plaintext_message" => "",
@@ -53,25 +49,7 @@ function html_email_handler_send_email(array $options = null) {
 	
 	// merge options
 	$options = array_merge($default_options, $options);
-	
-	// redo to/from for notifications
-	$notification = elgg_extract('notification', $options);
-	if (!empty($notification) && ($notification instanceof \Elgg\Notifications\Notification)) {
-		$recipient = $notification->getRecipient();
-		$sender = $notification->getSender();
 		
-		$options['to'] = html_email_handler_make_rfc822_address($recipient);
-		if (!isset($options['recipient'])) {
-			$options['recipient'] = $recipient;
-		}
-		
-		if (!($sender instanceof \ElggUser) && $sender->email) {
-			$options['from'] = html_email_handler_make_rfc822_address($sender);
-		} else {
-			$options['from'] = $site_from;
-		}
-	}
-	
 	// check options
 	if (!empty($options["to"]) && !is_array($options["to"])) {
 		$options["to"] = array($options["to"]);
@@ -392,44 +370,6 @@ function html_email_handler_get_sendmail_options() {
 	}
 	
 	return $result;
-}
-
-/**
- * This function build an RFC822 compliant address
- *
- * This function requires the option 'entity'
- *
- * @param ElggEntity $entity       entity to use as the basis for the address
- * @param bool       $use_fallback provides a fallback email if none defined
- *
- * @return string the correctly formatted address
- */
-function html_email_handler_make_rfc822_address(ElggEntity $entity, $use_fallback = true) {
-	// get the email address of the entity
-	$email = $entity->email;
-	if (empty($email) && $use_fallback) {
-		// no email found, fallback to site email
-		$site = elgg_get_site_entity();
-		
-		$email = $site->email;
-		if (empty($email)) {
-			// no site email, default to noreply
-			$email = "noreply@" . $site->getDomain();
-		}
-	}
-	
-	// build the RFC822 format
-	if (!empty($entity->name)) {
-		$name = $entity->name;
-		if (strstr($name, ",")) {
-			$name = '"' . $name . '"'; // Protect the name with quotations if it contains a comma
-		}
-		
-		$name = "=?UTF-8?B?" . base64_encode($name) . "?="; // Encode the name. If may content non ASCII chars.
-		$email = $name . " <" . $email . ">";
-	}
-	
-	return $email;
 }
 
 /**
