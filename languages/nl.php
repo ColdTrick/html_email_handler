@@ -1,10 +1,11 @@
 <?php
 /**
- * This file was created by Translation Editor v2.0
- * On 2015-01-28 15:50
+ * This file was created by Translation Editor v7.0-beta
+ * On 2018-12-14 16:13
  */
 
 return array (
+  'html_email_handler:settings:sendmail_options:description' => 'Hier kun je additionele parameters instellen voor sendmail, bijvoorbeeld -f %s (om ervoor te zorgen dat e-mails minder snel worden gemarkeerd als spam)',
   'html_email_handler:settings:embed_images:base64' => 'Base64 encoded',
   'html_email_handler:settings:embed_images:attach' => 'Bijlagen',
   'html_email_handler:settings:embed_images' => 'Afbeeldingen embedden in de e-mail',
@@ -18,6 +19,5 @@ return array (
   'html_email_handler:settings:notifications' => 'Gebruik als standaard e-mail notificatie methode',
   'html_email_handler:settings:notifications:subtext' => 'Dit zal alle e-mail berichten verzenden als HTML mails',
   'html_email_handler:settings:sendmail_options' => 'Additionele parameters voor sendmail (optioneel)',
-  'html_email_handler:settings:sendmail_options:description' => 'Hier kun je additionele parameters instellen voor sendmail, bijvoorbeeld -f % (om ervoor te zorgen dat e-mails minder snel worden gemarkeerd als spam)',
   'html_email_handler:notification:footer:settings' => 'Configureer je notificatie instellingen %shier%s',
 );
