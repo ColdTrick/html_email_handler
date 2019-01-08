@@ -4,13 +4,13 @@ $plugin = elgg_extract('entity', $vars);
 
 echo elgg_view_field([
 	'#type' => 'checkbox',
-	'#label' => elgg_echo('html_email_handler:settings:notifications'),
-	'#help' => elgg_echo('html_email_handler:settings:notifications:subtext'),
-	'name' => 'params[notifications]',
-	'checked' => $plugin->notifications === 'yes',
+	'#label' => elgg_echo('html_email_handler:settings:html_part'),
+	'#help' => elgg_echo('html_email_handler:settings:html_part:help'),
+	'name' => 'params[html_part]',
+	'checked' => (bool) $plugin->html_part,
 	'switch' => true,
-	'default' => 'no',
-	'value' => 'yes',
+	'default' => 0,
+	'value' => 1,
 ]);
 
 echo elgg_view_field([

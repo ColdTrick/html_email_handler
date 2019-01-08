@@ -19,7 +19,8 @@ class Bootstrap extends DefaultPluginBootstrap {
 		$hooks = $this->elgg()->hooks;
 		
 		// Handler that takes care of sending emails as HTML
-		$hooks->registerHandler('email', 'system', __NAMESPACE__ . '\Email::emailHandler');
+		$hooks->registerHandler('prepare', 'system:email', __NAMESPACE__ . '\Email::addHtmlPart');
 		$hooks->registerHandler('register', 'menu:theme_sandbox', __NAMESPACE__ . '\ThemeSandbox::menu');
+		$hooks->registerHandler('zend:message', 'system:email', __NAMESPACE__ . '\Email::correctParts');
 	}
 }
