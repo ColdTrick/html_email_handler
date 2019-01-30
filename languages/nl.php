@@ -5,8 +5,6 @@
  */
 
 return array (
-  'html_email_handler:settings:html_part' => 'Voeg een HTML sectie toe aan e-mails',
-  'html_email_handler:settings:html_part:help' => 'Indien ingeschakeld zal er een HTML versie van het bericht worden gemaakt.',
   'html_email_handler:settings:sendmail_options:description' => 'Hier kun je additionele parameters instellen voor sendmail, bijvoorbeeld -f %s (om ervoor te zorgen dat e-mails minder snel worden gemarkeerd als spam)',
   'html_email_handler:settings:embed_images:base64' => 'Base64 encoded',
   'html_email_handler:settings:embed_images:attach' => 'Bijlagen',

@@ -6,8 +6,6 @@ return array(
 	'html_email_handler:theme_preview:menu' => "HTML notification",
 	
 	// settings
-	'html_email_handler:settings:html_part' => "Add an HTML section to e-mails",
-	'html_email_handler:settings:html_part:help' => "When enabled an HTML section will be added to the e-mail message.",
 	'html_email_handler:settings:limit_subject' => "Limit the maximum length of e-mail subjects",
 	'html_email_handler:settings:limit_subject:subtext' => "Enable this option if members are complaining about unreadable e-mail subjects (mostly Outook users). This will potentialy loose some information in the subject.",
 	'html_email_handler:settings:embed_images' => "Embed images in the e-mails",

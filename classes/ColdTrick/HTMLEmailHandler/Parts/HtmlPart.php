@@ -11,7 +11,8 @@ class HtmlPart extends Part {
 		parent::__construct($content);
 		
 		$this->setType(Mime::TYPE_HTML);
-		$this->setCharset('"utf-8"');
-// 		$this->setId('html');
+		$this->setCharset('utf-8');
+		$this->setEncoding(Mime::ENCODING_BASE64);
+		$this->setId('htmltext');
 	}
 }

@@ -297,53 +297,33 @@ function html_email_handler_css_inliner($html_text) {
 /**
  * Make the HTML body from a $options array
  *
- * @param array  $options the options
- * @param string $body    the message body
+ * @param array $options the options, supports:
+ * 	- subject: the subject of the e-mail
+ * 	- body: the body of the e-mail
+ * 	- language: the language of the e-mail (default: current language)
  *
  * @return string
  */
-function html_email_handler_make_html_body($options = "", $body = "") {
-	global $CONFIG;
-	
-	if (!is_array($options)) {
-		elgg_deprecated_notice("html_email_handler_make_html_body now takes an array as param, please update your code", "1.9");
-		
-		$options = array(
-			"subject" => $options,
-			"body" => $body
-		);
-	}
-	
-	$defaults = array(
-		"subject" => "",
-		"body" => "",
-		"language" => get_current_language()
-	);
+function html_email_handler_make_html_body(array $options = []) {
+	$defaults = [
+		'subject' => '',
+		'body' => '',
+		'language' => get_current_language()
+	];
 	
 	$options = array_merge($defaults, $options);
 	
-	$options['body'] = parse_urls($options['body']);
-	// Remove end of line after HTML tags except for <a> tag
-	$options['body'] = preg_replace("/([^a])>(\r?\n|\r)/", "$1>", $options['body']);
-	$options['body'] = elgg_autop($options['body']);
+	$options['body'] = elgg()->html_formatter->formatBlock($options['body']);
 	
-	// in some cases when pagesetup isn't done yet this can cause problems
-	// so manualy set is to done
-	$unset = false;
-	if (!isset($CONFIG->pagesetupdone)) {
-		$unset = true;
-		$CONFIG->pagesetupdone = true;
-	}
+// 	$options['body'] = parse_urls($options['body']);
+// 	// Remove end of line after HTML tags except for <a> tag
+// 	$options['body'] = preg_replace("/([^a])>(\r?\n|\r)/", "$1>", $options['body']);
+// 	$options['body'] = elgg_autop($options['body']);
 	
 	// generate HTML mail body
-	$result = elgg_view("html_email_handler/notification/body", $options);
+	$result = elgg_view('html_email_handler/notification/body', $options);
 	
-	// do we need to restore pagesetup
-	if ($unset) {
-		unset($CONFIG->pagesetupdone);
-	}
-	
-	if (defined("XML_DOCUMENT_NODE")) {
+	if (defined('XML_DOCUMENT_NODE')) {
 		if ($transform = html_email_handler_css_inliner($result)) {
 			$result = $transform;
 		}
