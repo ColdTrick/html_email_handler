@@ -11,6 +11,31 @@ use Zend\Mail\Header\ContentType;
 class Email {
 	
 	/**
+	 * Limit the subject length of the e-mail
+	 *
+	 * Outlook has been known to have problems with long subjects
+	 *
+	 * @param \Elgg\Hook $hook 'prepare', 'system:email'
+	 *
+	 * @return void|\Elgg\Email
+	 */
+	public static function limitSubjectLength(\Elgg\Hook $hook) {
+		
+		if (elgg_get_plugin_setting('limit_subject', 'html_email_handler') !== 'yes') {
+			return;
+		}
+		
+		$email = $hook->getValue();
+		if (!$email instanceof \Elgg\Email) {
+			return;
+		}
+		
+		$email->setSubject(elgg_get_excerpt($email->getSubject(), 175));
+		
+		return $email;
+	}
+	
+	/**
 	 * Add an html part to the email message
 	 *
 	 * @param \Elgg\Hook $hook 'zend:message', 'system:email'
