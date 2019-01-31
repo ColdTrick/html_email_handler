@@ -1,5 +1,7 @@
 <?php
 
+use ColdTrick\HTMLEmailHandler\ImageFetcher;
+
 $plugin = elgg_extract('entity', $vars);
 
 echo elgg_view_field([
@@ -42,8 +44,21 @@ echo elgg_view_field([
 ]);
 
 echo elgg_view_field([
-	'#type' => 'text',
+	'#type' => 'number',
 	'#label' => elgg_echo('html_email_handler:settings:proxy_port'),
 	'name' => 'params[proxy_port]',
 	'value' => $plugin->proxy_port,
+	'min' => 0,
+	'max' => 65535,
+]);
+
+echo elgg_view_field([
+	'#type' => 'checkbox',
+	'#label' => elgg_echo('html_email_handler:settings:proxy_disable_ssl_verify'),
+	'#help' => elgg_echo('html_email_handler:settings:proxy_disable_ssl_verify:help'),
+	'name' => 'params[proxy_disable_ssl_verify]',
+	'default' => 0,
+	'value' => 1,
+	'checked' => !empty($plugin->proxy_disable_ssl_verify),
+	'switch' => true,
 ]);

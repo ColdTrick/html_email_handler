@@ -1,4 +1,6 @@
 <?php
+use ColdTrick\HTMLEmailHandler\ImageFetcher;
+
 /**
  * All helpder functions for this plugin can be found here
  */
@@ -408,7 +410,7 @@ function html_email_handler_base64_encode_images($text) {
 	if (!isset($plugin_setting)) {
 		$plugin_setting = false;
 		
-		if (elgg_get_plugin_setting("embed_images", "html_email_handler", "no") === "base64") {
+		if (elgg_get_plugin_setting('embed_images', 'html_email_handler') === 'base64') {
 			$plugin_setting = true;
 		}
 	}
@@ -422,12 +424,14 @@ function html_email_handler_base64_encode_images($text) {
 		return $text;
 	}
 	
+	$fetcher = new ImageFetcher();
+	
 	foreach ($image_urls as $url) {
 		// remove wrapping quotes from the url
 		$image_url = substr($url, 1, -1);
 		
 		// get the image contents
-		$contents = html_email_handler_get_image($image_url);
+		$contents = $fetcher->getImageBase64($image_url);
 		if (empty($contents)) {
 			continue;
 		}
@@ -547,7 +551,7 @@ function html_email_handler_find_images($text) {
 	}
 	
 	// find all matches
-	$matches = array();
+	$matches = [];
 	preg_match_all($pattern, $text, $matches);
 	
 	if (empty($matches) || !isset($matches[1])) {
