@@ -33,11 +33,10 @@ if (!get_input('mail')) {
 }
 
 // Test sending a basic HTML mail
-$options = [
-	'to' => $user->email,
+$email = \Elgg\Email::factory([
+	'to' => $user,
 	'subject' => $subject,
 	'body' => $plain_message,
-	'recipient' => $user,
 	'attachments' => [
 		[
 			'filepath' => elgg_get_plugin_from_id('html_email_handler')->getPath() . 'manifest.xml',
@@ -45,9 +44,9 @@ $options = [
 			'mimetype' => 'application/xml',
 		],
 	],
-];
+]);
 
-html_email_handler_send_email($options);
+elgg_send_email($email);
 
 // Test sending attachments through notify_user()
 $to = $user->guid;
@@ -55,7 +54,6 @@ $from = $site->guid;
 $subject = 'Notification test';
 $message = 'This notification has been sent using notify_user() and it should have an attachment.';
 $params = [
-	'recipient' => $user,
 	'attachments' => [
 		[
 			'filepath' => elgg_get_plugin_from_id('html_email_handler')->getPath() . 'manifest.xml',

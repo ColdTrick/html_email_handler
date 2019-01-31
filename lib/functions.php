@@ -18,6 +18,7 @@
  *     date => NULL|UNIX timestamp with the date the message was created
  *     attachments => NULL|ARR of array(array('mimetype', 'filename', 'content'))
  *
+ * @deprecated use elgg_send_email()
  * @return bool
  */
 function html_email_handler_send_email(array $options = null) {
@@ -314,11 +315,6 @@ function html_email_handler_make_html_body(array $options = []) {
 	$options = array_merge($defaults, $options);
 	
 	$options['body'] = elgg()->html_formatter->formatBlock($options['body']);
-	
-// 	$options['body'] = parse_urls($options['body']);
-// 	// Remove end of line after HTML tags except for <a> tag
-// 	$options['body'] = preg_replace("/([^a])>(\r?\n|\r)/", "$1>", $options['body']);
-// 	$options['body'] = elgg_autop($options['body']);
 	
 	// generate HTML mail body
 	$result = elgg_view('html_email_handler/notification/body', $options);

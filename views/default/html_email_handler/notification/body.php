@@ -1,13 +1,18 @@
 <?php
 
-$subject = elgg_extract("subject", $vars);
-$message = elgg_extract("body", $vars);
+$subject = elgg_extract('subject', $vars);
+$message = elgg_extract('body', $vars);
 
-$language = elgg_extract("language", $vars, get_current_language());
-$recipient = elgg_extract("recipient", $vars);
+$language = elgg_extract('language', $vars, get_current_language());
+$recipient = elgg_extract('recipient', $vars);
 
-$head = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
-$head .= '<base target="_blank" />';
+$head = elgg_format_element('meta', [
+	'http-equiv' => 'Content-Type',
+	'content' => 'text/html; charset=UTF-8',
+]);
+$head .= elgg_format_element('base', [
+	'target' => '_blank',
+]);
 
 if (!empty($subject)) {
 	$head .= elgg_format_element('title', [], $subject);
@@ -15,20 +20,24 @@ if (!empty($subject)) {
 
 $css = elgg_view('css/html_email_handler/notification');
 
+$site = elgg_get_site_entity();
 $site_link = elgg_view('output/url', [
-	'href' => elgg_get_site_url(),
-	'text' => elgg_get_site_entity()->getDisplayName(),
+	'text' => $site->getDisplayName(),
+	'href' => $site->getURL(),
 	'is_trusted' => true,
 ]);
 
 $body_title = !empty($subject) ? elgg_view_title($subject) : '';
 
 $notification_footer = '';
-if (!empty($recipient) && ($recipient instanceof ElggUser)) {
-	$settings_url = elgg_normalize_url("settings/user/{$recipient->username}");
+if ($recipient instanceof ElggUser) {
+	$route_name = 'settings:account';
 	if (elgg_is_active_plugin('notifications')) {
-		$settings_url = elgg_normalize_url("notifications/personal/{$recipient->username}");
+		$route_name = 'settings:notification:personal';
 	}
+	$settings_url = elgg_generate_url($route_name, [
+		'username' => $recipient->username,
+	]);
 	$notification_footer = elgg_echo('html_email_handler:notification:footer:settings', [
 		"<a href='{$settings_url}'>",
 		'</a>',
@@ -54,6 +63,9 @@ $body = <<<__BODY
 	</div>
 </div>
 __BODY;
+
+// prevent developer tools output
+elgg_register_plugin_hook_handler('view_vars', 'developers/log', '\Elgg\Values::preventViewOutput');
 
 echo elgg_view('page/elements/html', [
 	'head' => $head,

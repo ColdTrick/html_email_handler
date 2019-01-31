@@ -99,7 +99,6 @@ class Email {
 	 * @return \Zend\Mime\Part
 	 */
 	protected static function makeHtmlPart(\Elgg\Email $email) {
-		
 		$mail_params = $email->getParams();
 		$html_text = elgg_extract('html_message', $mail_params);
 		if ($html_text instanceof MimePart) {
@@ -111,12 +110,45 @@ class Email {
 				$html_text = html_email_handler_css_inliner($html_text);
 			}
 		} else {
+			$recipient = self::findRecipient($email);
 			$html_text = html_email_handler_make_html_body([
 				'subject' => $email->getSubject(),
 				'body' => $email->getBody(),
+				'recipient' => $recipient,
 			]);
 		}
 		
 		return new HtmlPart($html_text);
+	}
+	
+	/**
+	 * Find the user who will receive the e-mail
+	 *
+	 * @param \Elgg\Email $email the e-mail
+	 *
+	 * @return void|\ElggUser
+	 */
+	protected static function findRecipient(\Elgg\Email $email) {
+		
+		$to = $email->getTo();
+		if (empty($to)) {
+			return;
+		}
+		
+		$users = elgg_get_entities([
+			'type' => 'user',
+			'limit' => false,
+			'metadata_name_value_pairs' => [
+				[
+					'name' => 'name',
+					'value' => $to->getName(),
+				],
+				[
+					'name' => 'email',
+					'value' => $to->getEmail(),
+				],
+			],
+		]);
+		return elgg_extract(0, $users);
 	}
 }
