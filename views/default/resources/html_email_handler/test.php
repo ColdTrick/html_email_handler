@@ -21,10 +21,8 @@ $html_message = html_email_handler_make_html_body([
 	'recipient' => $user,
 ]);
 
-if (!empty($html_message)) {
-	$html_message = html_email_handler_normalize_urls($html_message);
-	$html_message = html_email_handler_base64_encode_images($html_message);
-}
+$html_message = html_email_handler_normalize_urls($html_message);
+$html_message = html_email_handler_base64_encode_images($html_message);
 
 echo $html_message;
 
@@ -32,27 +30,7 @@ if (!get_input('mail')) {
 	return;
 }
 
-// Test sending a basic HTML mail
-$email = \Elgg\Email::factory([
-	'to' => $user,
-	'subject' => $subject,
-	'body' => $plain_message,
-	'attachments' => [
-		[
-			'filepath' => elgg_get_plugin_from_id('html_email_handler')->getPath() . 'manifest.xml',
-			'filename' => 'manifest.xml',
-			'mimetype' => 'application/xml',
-		],
-	],
-]);
-
-elgg_send_email($email);
-
 // Test sending attachments through notify_user()
-$to = $user->guid;
-$from = $site->guid;
-$subject = 'Notification test';
-$message = 'This notification has been sent using notify_user() and it should have an attachment.';
 $params = [
 	'attachments' => [
 		[
@@ -63,4 +41,4 @@ $params = [
 	],
 ];
 
-notify_user($to, $from, $subject, $message, $params, ['email']);
+notify_user($user->guid, $site->guid, $subject, $plain_message, $params, ['email']);
