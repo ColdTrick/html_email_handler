@@ -1,9 +1,9 @@
 <?php
-use ColdTrick\HTMLEmailHandler\ImageFetcher;
-
 /**
  * All helpder functions for this plugin can be found here
  */
+
+use ColdTrick\HTMLEmailHandler\ImageFetcher;
 
 /**
  * Sends out a full HTML mail
@@ -25,20 +25,10 @@ use ColdTrick\HTMLEmailHandler\ImageFetcher;
  */
 function html_email_handler_send_email(array $options = null) {
 	static $limit_subject;
+	return false;
 	
 	$site = elgg_get_site_entity();
 		
-	// get sendmail options
-	$sendmail_options = html_email_handler_get_sendmail_options();
-	
-	if (!isset($limit_subject)) {
-		$limit_subject = false;
-		
-		if (elgg_get_plugin_setting("limit_subject", "html_email_handler") == "yes") {
-			$limit_subject = true;
-		}
-	}
-	
 	// set default options
 	$default_options = array(
 		"to" => array(),
@@ -250,12 +240,9 @@ function html_email_handler_send_email(array $options = null) {
 	// encode subject to handle special chars
 	$subject = $options["subject"];
 	$subject = html_entity_decode($subject, ENT_QUOTES, 'UTF-8'); // Decode any html entities
-	if ($limit_subject) {
-		$subject = elgg_get_excerpt($subject, 175);
-	}
 	$subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
 	
-	return mail($to, $subject, $message, $headers_string, $sendmail_options);
+	return mail($to, $subject, $message, $headers_string);
 }
 
 /**
@@ -331,26 +318,6 @@ function html_email_handler_make_html_body(array $options = []) {
 }
 
 /**
- * Get the plugin settings for sendmail
- *
- * @return string
- */
-function html_email_handler_get_sendmail_options() {
-	static $result;
-	
-	if (!isset($result)) {
-		$result = "";
-		
-		$setting = elgg_get_plugin_setting("sendmail_options", "html_email_handler");
-		if (!empty($setting)) {
-			$result = $setting;
-		}
-	}
-	
-	return $result;
-}
-
-/**
  * Normalize all URL's in the text to full URL's
  *
  * @param string $text the text to check for URL's
@@ -365,7 +332,7 @@ function html_email_handler_normalize_urls($text) {
 	}
 	
 	// find all matches
-	$matches = array();
+	$matches = [];
 	preg_match_all($pattern, $text, $matches);
 	
 	if (empty($matches) || !isset($matches[1])) {
@@ -383,7 +350,7 @@ function html_email_handler_normalize_urls($text) {
 		$new_url = elgg_normalize_url($real_url);
 		// make the correct replacement string
 		$replacement = str_replace($real_url, $new_url, $url);
-	
+		
 		// replace the url in the content
 		$text = str_replace($url, $replacement, $text);
 	}
@@ -401,21 +368,8 @@ function html_email_handler_normalize_urls($text) {
  * @return string
  */
 function html_email_handler_base64_encode_images($text) {
-	static $plugin_setting;
 	
-	if (empty($text)) {
-		return $text;
-	}
-	
-	if (!isset($plugin_setting)) {
-		$plugin_setting = false;
-		
-		if (elgg_get_plugin_setting('embed_images', 'html_email_handler') === 'base64') {
-			$plugin_setting = true;
-		}
-	}
-	
-	if (!$plugin_setting) {
+	if (empty($text) || elgg_get_plugin_setting('embed_images', 'html_email_handler') !== 'base64') {
 		return $text;
 	}
 	
@@ -437,103 +391,13 @@ function html_email_handler_base64_encode_images($text) {
 		}
 		
 		// build inline image
-		$replacement = str_replace($image_url, "data:" . $contents, $url);
+		$replacement = str_replace($image_url, "data:{$contents}", $url);
 		
 		// replace in text
 		$text = str_replace($url, $replacement, $text);
 	}
 	
 	return $text;
-}
-
-/**
- * Get the contents of an image url for embedding
- *
- * @param string $image_url the URL of the image
- *
- * @return false|string
- */
-function html_email_handler_get_image($image_url) {
-	static $proxy_host;
-	static $proxy_port;
-	static $session_cookie;
-	
-	if (empty($image_url)) {
-		return false;
-	}
-	$image_url = htmlspecialchars_decode($image_url);
-	$image_url = elgg_normalize_url($image_url);
-		
-	$cache_name = 'html_email_handler_' . md5($image_url);
-	$cache_result = elgg_load_system_cache($cache_name);
-	if ($cache_result) {
-		return $cache_result;
-	}
-		
-	// build cURL options
-	$ch = curl_init($image_url);
-	
-	curl_setopt($ch, CURLOPT_HEADER, false);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-	
-	// set proxy settings
-	if (!isset($proxy_host)) {
-		$setting = elgg_get_plugin_setting('proxy_host', 'html_email_handler');
-		$proxy_host = !empty($setting) ? $setting : false;
-	}
-	
-	if ($proxy_host) {
-		curl_setopt($ch, CURLOPT_PROXY, $proxy_host);
-	}
-	
-	if (!isset($proxy_port)) {
-		$setting = (int) elgg_get_plugin_setting('proxy_port', 'html_email_handler');
-		$proxy_port = ($setting > 0) ? $setting : false;
-	}
-	
-	if (!empty($proxy_port)) {
-		curl_setopt($ch, CURLOPT_PROXYPORT, $proxy_port);
-	}
-	
-	// check if local url, so we can send Elgg cookies
-	if (strpos($image_url, elgg_get_site_url()) !== false) {
-		if (!isset($session_cookie)) {
-			$session_cookie = false;
-			
-			$cookie_settings = elgg_get_config('cookies');
-			if (!empty($cookie_settings)) {
-				$cookie_name = elgg_extract('name', $cookie_settings['session']);
-				
-				$session_cookie = $cookie_name . '=' . session_id();
-			}
-		}
-		
-		if (!empty($session_cookie)) {
-			curl_setopt($ch, CURLOPT_COOKIE, $session_cookie);
-		}
-	}
-	
-	// get the image
-	$contents = curl_exec($ch);
-	$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-	$http_code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	
-	curl_close($ch);
-	
-	if (empty($contents) || ($http_code !== 200)) {
-		return false;
-	}
-	
-	// build a valid uri
-	// https://en.wikipedia.org/wiki/Data_URI_scheme
-	$base64_result = $content_type . ';charset=UTF-8;base64,' . base64_encode($contents);
-	
-	// write to cache
-	elgg_save_system_cache($cache_name, $base64_result);
-	
-	// return result
-	return $base64_result;
 }
 
 /**
@@ -570,23 +434,8 @@ function html_email_handler_find_images($text) {
  * @return string|array
  */
 function html_email_handler_attach_images($text) {
-	static $plugin_setting;
 	
-	if (empty($text)) {
-		return $text;
-	}
-	
-	// get plugin setting for replacement
-	if (!isset($plugin_setting)) {
-		$plugin_setting = false;
-	
-		if (elgg_get_plugin_setting("embed_images", "html_email_handler", "no") === "attach") {
-			$plugin_setting = true;
-		}
-	}
-	
-	// check plugin setting
-	if (!$plugin_setting) {
+	if (empty($text) || elgg_get_plugin_setting('embed_images', 'html_email_handler') !== 'attach') {
 		return $text;
 	}
 	
@@ -596,6 +445,8 @@ function html_email_handler_attach_images($text) {
 		return $text;
 	}
 	
+	$fetcher = new ImageFetcher();
+	
 	$result = [
 		'images' => [],
 	];
@@ -604,27 +455,21 @@ function html_email_handler_attach_images($text) {
 		// remove wrapping quotes from the url
 		$image_url = substr($url, 1, -1);
 		
-		// get the image contents
-		$contents = html_email_handler_get_image($image_url);
-		if (empty($contents)) {
+		// get the image data
+		$image_data = $fetcher->getImage($image_url);
+		if (empty($image_data)) {
 			continue;
 		}
-		
-		// make different parts of the result
-		list($content_type, $data) = explode(";charset=UTF-8;base64,", $contents);
 		
 		// Unique ID
 		$uid = uniqid();
 		
-		$result['images'][] = [
-			'uid' => $uid,
-			'content_type' => $content_type,
-			'data' => $data,
-			'name' => basename($image_url),
-		];
+		$image_data['uid'] = $uid;
+		
+		$result['images'][] = $image_data;
 		
 		// replace url in the text with uid
-		$replacement = str_replace($image_url, "cid:" . $uid, $url);
+		$replacement = str_replace($image_url, "cid:{$uid}", $url);
 		
 		$text = str_replace($url, $replacement, $text);
 	}
