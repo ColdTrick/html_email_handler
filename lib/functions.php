@@ -13,35 +13,34 @@ use ColdTrick\HTMLEmailHandler\ImageFetcher;
  * @return false|string
  */
 function html_email_handler_css_inliner($html_text) {
-	$result = false;
 	
-	if (!empty($html_text) && defined("XML_DOCUMENT_NODE")) {
-		$css = "";
-		
-		// set custom error handling
-		libxml_use_internal_errors(true);
-		
-		$dom = new DOMDocument();
-		$dom->loadHTML($html_text);
-		
-		$styles = $dom->getElementsByTagName("style");
-		
-		if (!empty($styles)) {
-			$style_count = $styles->length;
-			
-			for ($i = 0; $i < $style_count; $i++) {
-				$css .= $styles->item($i)->nodeValue;
-			}
-		}
-		
-		// clear error log
-		libxml_clear_errors();
-		
-		$emo = new Pelago\Emogrifier($html_text, $css);
-		$result = $emo->emogrify();
+	if (empty($html_text) || !defined('XML_DOCUMENT_NODE')) {
+		return false;
 	}
 	
-	return $result;
+	$css = '';
+	
+	// set custom error handling
+	libxml_use_internal_errors(true);
+	
+	$dom = new DOMDocument();
+	$dom->loadHTML($html_text);
+	
+	$styles = $dom->getElementsByTagName('style');
+	
+	if (!empty($styles)) {
+		$style_count = $styles->length;
+		
+		for ($i = 0; $i < $style_count; $i++) {
+			$css .= $styles->item($i)->nodeValue;
+		}
+	}
+	
+	// clear error log
+	libxml_clear_errors();
+	
+	$emo = new Pelago\Emogrifier($html_text, $css);
+	return $emo->emogrify();
 }
 
 /**
@@ -68,10 +67,9 @@ function html_email_handler_make_html_body(array $options = []) {
 	// generate HTML mail body
 	$result = elgg_view('html_email_handler/notification/body', $options);
 	
-	if (defined('XML_DOCUMENT_NODE')) {
-		if ($transform = html_email_handler_css_inliner($result)) {
-			$result = $transform;
-		}
+	$inlined = html_email_handler_css_inliner($result);
+	if (!empty($inlined)) {
+		return $inlined;
 	}
 	
 	return $result;
