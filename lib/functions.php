@@ -304,7 +304,7 @@ function html_email_handler_make_html_body(array $options = []) {
 	$options = array_merge($defaults, $options);
 	
 	$options['body'] = elgg()->html_formatter->formatBlock($options['body']);
-	
+
 	// generate HTML mail body
 	$result = elgg_view('html_email_handler/notification/body', $options);
 	

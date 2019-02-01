@@ -64,9 +64,6 @@ $body = <<<__BODY
 </div>
 __BODY;
 
-// prevent developer tools output
-elgg_register_plugin_hook_handler('view_vars', 'developers/log', '\Elgg\Values::preventViewOutput');
-
 echo elgg_view('page/elements/html', [
 	'head' => $head,
 	'body' => $body,

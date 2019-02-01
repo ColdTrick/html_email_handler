@@ -33,6 +33,8 @@ class Bootstrap extends DefaultPluginBootstrap {
 		// Handler that takes care of sending emails as HTML
 		$hooks->registerHandler('prepare', 'system:email', __NAMESPACE__ . '\Email::limitSubjectLength');
 		$hooks->registerHandler('register', 'menu:theme_sandbox', __NAMESPACE__ . '\ThemeSandbox::menu');
+		$hooks->registerHandler('view', 'html_email_handler/notification/body', __NAMESPACE__ . '\DeveloperTools::reenableLogOutput');
+		$hooks->registerHandler('view_vars', 'html_email_handler/notification/body', __NAMESPACE__ . '\DeveloperTools::preventLogOutput');
 		$hooks->registerHandler('zend:message', 'system:email', __NAMESPACE__ . '\Email::makeHtmlMail');
 	}
 	
