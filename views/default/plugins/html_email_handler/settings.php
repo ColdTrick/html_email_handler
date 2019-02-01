@@ -1,7 +1,6 @@
 <?php
 
-use ColdTrick\HTMLEmailHandler\ImageFetcher;
-
+/* @var $plugin \ElggPlugin */
 $plugin = elgg_extract('entity', $vars);
 
 echo elgg_view_field([
