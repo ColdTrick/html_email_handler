@@ -7,6 +7,7 @@ use Zend\Mime\Mime;
 use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mail\Header\ContentType;
+use Elgg\Email\Attachment;
 
 class Email {
 	
@@ -128,7 +129,7 @@ class Email {
 		$html_text = elgg_extract('html_message', $mail_params);
 		if ($html_text instanceof MimePart) {
 			return $html_text;
-		} elseif (!empty($html_text)) {
+		} elseif (is_string($html_text)) {
 			// html text already provided
 			if (elgg_extract('convert_css', $params, true)) {
 				// still needs to be converted to inline CSS
@@ -143,7 +144,43 @@ class Email {
 			]);
 		}
 		
-		return new HtmlPart($html_text);
+		// normalize urls in text
+		$html_text = html_email_handler_normalize_urls($html_text);
+		// base64 embed images (when enabled)
+		$html_text = html_email_handler_base64_encode_images($html_text);
+		// attach images (when enabled)
+		$image_attachments = html_email_handler_attach_images($html_text);
+		
+		if (is_string($image_attachments)) {
+			// no need to split html message and images
+			return new HtmlPart($html_text);
+		}
+		
+		// split html body and relate images
+		$message = new MimeMessage();
+		
+		$html_part = new HtmlPart($image_attachments['text']);
+		$message->addPart($html_part);
+		
+		foreach ($image_attachments['images'] as $image_data) {
+			$attachment = Attachment::factory([
+				'id' => $image_data['uid'],
+				'content' => $image_data['data'],
+				'type' => $image_data['content-type'],
+				'filename' => $image_data['name'],
+				'encoding' => Mime::ENCODING_BASE64,
+				'disposition' => Mime::DISPOSITION_INLINE,
+				'charset' => 'UTF-8',
+			]);
+			
+			$message->addPart($attachment);
+		}
+		
+		$part = new MimePart($message->generateMessage());
+		$part->setType(Mime::MULTIPART_RELATED);
+		$part->setBoundary($message->getMime()->boundary());
+		
+		return $part;
 	}
 	
 	/**
