@@ -35,6 +35,7 @@ class Bootstrap extends DefaultPluginBootstrap {
 		$hooks->registerHandler('register', 'menu:theme_sandbox', __NAMESPACE__ . '\ThemeSandbox::menu');
 		$hooks->registerHandler('view', 'html_email_handler/notification/body', __NAMESPACE__ . '\DeveloperTools::reenableLogOutput');
 		$hooks->registerHandler('view_vars', 'html_email_handler/notification/body', __NAMESPACE__ . '\DeveloperTools::preventLogOutput');
+		$hooks->registerHandler('zend:message', 'system:email', __NAMESPACE__ . '\Email::addRecipients', 600);
 		$hooks->registerHandler('zend:message', 'system:email', __NAMESPACE__ . '\Email::makeHtmlMail');
 	}
 	

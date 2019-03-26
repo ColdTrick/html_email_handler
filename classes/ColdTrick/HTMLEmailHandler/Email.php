@@ -8,6 +8,8 @@ use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mail\Header\ContentType;
 use Elgg\Email\Attachment;
+use Elgg\Email as ElggMail;
+use Elgg\Email\Address;
 
 class Email {
 	
@@ -212,5 +214,57 @@ class Email {
 			],
 		]);
 		return elgg_extract(0, $users);
+	}
+	
+	/**
+	 * Support more recipients in emails
+	 *
+	 * @param \Elgg\Hook $hook 'zend:message', 'system:email'
+	 *
+	 * @return void|\Zend\Mail\Message
+	 */
+	public static function addRecipients(\Elgg\Hook $hook) {
+		
+		$email = $hook->getParam('email');
+		$message = $hook->getValue();
+		if (!$email instanceof ElggMail || !$message instanceof \Zend\Mail\Message) {
+			return;
+		}
+		
+		$mail_params = $email->getParams();
+		foreach (['to', 'cc', 'bcc'] as $recipient_type) {
+			$recipients = (array) elgg_extract($recipient_type, $mail_params, []);
+			if (empty($recipients)) {
+				continue;
+			}
+			
+			foreach ($recipients as $recipient) {
+				if (is_string($recipient)) {
+					try {
+						$recipient = Address::fromString($recipient);
+					} catch (\Exception $e) {
+						continue;
+					}
+				}
+				
+				if (!$recipient instanceof Address) {
+					continue;
+				}
+				
+				switch ($recipient_type) {
+					case 'to':
+						$message->addTo($recipient);
+						break;
+					case 'cc':
+						$message->addCc($recipient);
+						break;
+					case 'bcc':
+						$message->addBcc($recipient);
+						break;
+				}
+			}
+		}
+		
+		return $message;
 	}
 }
