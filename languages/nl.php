@@ -1,10 +1,12 @@
 <?php
 /**
  * This file was created by Translation Editor v7.0-beta
- * On 2019-01-08 16:48
+ * On 2019-03-27 16:42
  */
 
 return array (
+  'html_email_handler:settings:proxy_disable_ssl_verify' => 'Schakel SSL verificatie uit',
+  'html_email_handler:settings:proxy_disable_ssl_verify:help' => 'Indien ingeschakeld zal tijdens het ophalen van de afbeeldingen in de e-mails SSL certificaat verificatie uit worden gezet',
   'html_email_handler:settings:sendmail_options:description' => 'Hier kun je additionele parameters instellen voor sendmail, bijvoorbeeld -f %s (om ervoor te zorgen dat e-mails minder snel worden gemarkeerd als spam)',
   'html_email_handler:settings:embed_images:base64' => 'Base64 encoded',
   'html_email_handler:settings:embed_images:attach' => 'Bijlagen',
