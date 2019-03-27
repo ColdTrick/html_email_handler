@@ -1,6 +1,20 @@
 Version history
 ===============
 
+5.0 (2019-03-27):
+
+- added: support for multiple to and cc, bcc recipients
+- changed: image cache now uses system cache
+- changed: minimal requirements set for Elgg 3
+- changed: moved start.php to Bootstrap class
+- changed: pagehandler changed to route registration and resource file
+- changed: reworking image embedding
+- changed: updated emogrifier version
+- fixed: html emails work again
+- fixed: test page mails again
+- removed: function html_email_handler_send_email use elgg_send_email
+- removed: leave email address formatting to core
+
 4.0.4 (2017-09-08):
 
 - fixed: using wrong config value to get cookie settings
