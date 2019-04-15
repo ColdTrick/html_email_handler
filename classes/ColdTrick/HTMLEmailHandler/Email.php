@@ -133,7 +133,7 @@ class Email {
 			return $html_text;
 		} elseif (is_string($html_text)) {
 			// html text already provided
-			if (elgg_extract('convert_css', $params, true)) {
+			if (elgg_extract('convert_css', $mail_params, true)) {
 				// still needs to be converted to inline CSS
 				$html_text = html_email_handler_css_inliner($html_text);
 			}
