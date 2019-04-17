@@ -1,6 +1,10 @@
 Version history
 ===============
 
+5.0.1 (2019-04-17):
+
+- several small chores/fixes
+
 5.0 (2019-03-27):
 
 - added: support for multiple to and cc, bcc recipients
