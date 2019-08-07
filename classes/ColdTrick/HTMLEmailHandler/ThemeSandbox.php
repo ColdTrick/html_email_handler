@@ -7,19 +7,17 @@ class ThemeSandbox {
 	/**
 	 * Add a menu item to the themeing sandbox
 	 *
-	 * @param string          $hook         the name of the hook
-	 * @param string          $type         the type of the hook
-	 * @param \ElggMenuItem[] $return_value current return value
-	 * @param array           $params       supplied params
+	 * @param \Elgg\Hook $hook 'register', 'menu:theme_sandbox'
 	 *
 	 * @return void|\ElggMenuItem[]
 	 */
-	public static function menu($hook, $type, $return_value, $params) {
+	public static function menu(\Elgg\Hook $hook) {
 		
 		if (!elgg_is_admin_logged_in()) {
 			return;
 		}
 		
+		$return_value = $hook->getValue();
 		$return_value[] = \ElggMenuItem::factory([
 			'name' => 'html_email_handler',
 			'text' => elgg_echo('html_email_handler:theme_preview:menu'),
