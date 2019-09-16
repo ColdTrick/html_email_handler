@@ -72,7 +72,7 @@ class Email {
 				$new_body->addPart($a);
 			}
 			
-			$message_content_type = Mime::MULTIPART_RELATED;
+			$message_content_type = Mime::MULTIPART_MIXED;
 		} else {
 			$new_body = $multipart;
 			$message_content_type = Mime::MULTIPART_ALTERNATIVE;
