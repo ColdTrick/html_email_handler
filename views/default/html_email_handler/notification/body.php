@@ -41,7 +41,7 @@ if ($recipient instanceof ElggUser) {
 	$notification_footer = elgg_echo('html_email_handler:notification:footer:settings', [
 		"<a href='{$settings_url}'>",
 		'</a>',
-	]);
+	], $recipient->language);
 }
 
 $body = <<<__BODY
