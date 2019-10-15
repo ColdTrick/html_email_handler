@@ -31,6 +31,7 @@ $body_title = !empty($subject) ? elgg_view_title($subject) : '';
 
 $notification_footer = '';
 if ($recipient instanceof ElggUser) {
+	$language = $recipient->getLanguage($language);
 	$route_name = 'settings:account';
 	if (elgg_is_active_plugin('notifications')) {
 		$route_name = 'settings:notification:personal';
@@ -41,7 +42,7 @@ if ($recipient instanceof ElggUser) {
 	$notification_footer = elgg_echo('html_email_handler:notification:footer:settings', [
 		"<a href='{$settings_url}'>",
 		'</a>',
-	], $recipient->language);
+	], $language);
 }
 
 $body = <<<__BODY
