@@ -1,6 +1,10 @@
 Version history
 ===============
 
+5.0.4 (2020-05-26):
+
+- fixed: echo the footer in the recipient language
+
 5.0.3 (2019-09-18):
 
 - fixed: correct header for message with attachments
