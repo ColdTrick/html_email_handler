@@ -4,6 +4,7 @@
  */
 
 use ColdTrick\HTMLEmailHandler\ImageFetcher;
+use Pelago\Emogrifier\CssInliner;
 
 /**
  * This function converts CSS to inline style, the CSS needs to be found in a <style> element
@@ -39,8 +40,7 @@ function html_email_handler_css_inliner($html_text) {
 	// clear error log
 	libxml_clear_errors();
 	
-	$emo = new Pelago\Emogrifier($html_text, $css);
-	return $emo->emogrify();
+	return CssInliner::fromHtml($html_text)->inlineCss($css)->render();
 }
 
 /**
