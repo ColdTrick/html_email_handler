@@ -1,6 +1,10 @@
 Version history
 ===============
 
+5.1 (2020-10-13):
+
+- changed: updated Emogrify to 4.0 so it support PHP 7.4
+
 5.0.4 (2020-05-26):
 
 - fixed: echo the footer in the recipient language
